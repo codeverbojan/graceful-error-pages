@@ -1,0 +1,246 @@
+<?php
+/**
+ * Tests for the AutoDetect class.
+ *
+ * @package GracefulErrorPages\Tests\Unit
+ */
+
+declare( strict_types=1 );
+
+namespace GracefulErrorPages\Tests\Unit;
+
+use Brain\Monkey;
+use Brain\Monkey\Functions;
+use GracefulErrorPages\AutoDetect;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+/**
+ * AutoDetect unit tests.
+ */
+class AutoDetectTest extends TestCase {
+
+	/**
+	 * Set up Brain\Monkey before each test.
+	 *
+	 * @return void
+	 */
+	protected function set_up(): void {
+		parent::set_up();
+		Monkey\setUp();
+
+		Functions\when( 'esc_url_raw' )->returnArg();
+	}
+
+	/**
+	 * Tear down Brain\Monkey after each test.
+	 *
+	 * @return void
+	 */
+	protected function tear_down(): void {
+		Monkey\tearDown();
+		parent::tear_down();
+	}
+
+	/**
+	 * Test that detect() returns the expected array keys.
+	 *
+	 * @return void
+	 */
+	public function test_detect_returns_expected_keys(): void {
+		Functions\expect( 'get_bloginfo' )
+			->with( 'name' )
+			->andReturn( 'Test Site' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\when( 'get_theme_mod' )->justReturn( '' );
+		Functions\expect( 'get_site_icon_url' )->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertArrayHasKey( 'site_name', $result );
+		$this->assertArrayHasKey( 'logo_url', $result );
+		$this->assertArrayHasKey( 'icon_url', $result );
+		$this->assertArrayHasKey( 'brand_color', $result );
+	}
+
+	/**
+	 * Test that detect() populates site name from get_bloginfo.
+	 *
+	 * @return void
+	 */
+	public function test_detect_populates_site_name(): void {
+		Functions\expect( 'get_bloginfo' )
+			->with( 'name' )
+			->andReturn( 'My WordPress Site' );
+		Functions\expect( 'sanitize_text_field' )
+			->andReturnFirstArg();
+		Functions\expect( 'get_theme_mod' )
+			->andReturn( '' );
+		Functions\expect( 'get_site_icon_url' )
+			->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( 'My WordPress Site', $result['site_name'] );
+	}
+
+	/**
+	 * Test that detect() returns fallback brand color when no theme mod is set.
+	 *
+	 * @return void
+	 */
+	public function test_fallback_brand_color(): void {
+		Functions\expect( 'get_bloginfo' )->andReturn( 'Test' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\when( 'get_theme_mod' )->justReturn( '' );
+		Functions\expect( 'get_site_icon_url' )->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( '#2563eb', $result['brand_color'] );
+	}
+
+	/**
+	 * Test that detect() returns custom brand color when theme mod is set.
+	 *
+	 * @return void
+	 */
+	public function test_custom_brand_color(): void {
+		Functions\expect( 'get_bloginfo' )->andReturn( 'Test' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\when( 'get_theme_mod' )->alias(
+			function ( string $name, $default = false ) {
+				if ( 'custom_logo' === $name ) {
+					return 0;
+				}
+				if ( 'primary_color' === $name ) {
+					return '#ff5733';
+				}
+				return $default;
+			}
+		);
+		Functions\expect( 'sanitize_hex_color' )
+			->once()
+			->with( '#ff5733' )
+			->andReturn( '#ff5733' );
+		Functions\expect( 'get_site_icon_url' )->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( '#ff5733', $result['brand_color'] );
+	}
+
+	/**
+	 * Test that detect() returns logo URL when custom_logo is set.
+	 *
+	 * @return void
+	 */
+	public function test_detect_logo_url(): void {
+		Functions\expect( 'get_bloginfo' )->andReturn( 'Test' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\when( 'get_theme_mod' )->alias(
+			function ( string $name, $default = false ) {
+				if ( 'custom_logo' === $name ) {
+					return 42;
+				}
+				return $default;
+			}
+		);
+		Functions\expect( 'wp_get_attachment_image_url' )
+			->once()
+			->with( 42, 'full' )
+			->andReturn( 'https://example.com/logo.png' );
+		Functions\expect( 'get_site_icon_url' )->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( 'https://example.com/logo.png', $result['logo_url'] );
+	}
+
+	/**
+	 * Test that detect() returns icon URL when site icon is set.
+	 *
+	 * @return void
+	 */
+	public function test_detect_icon_url(): void {
+		Functions\expect( 'get_bloginfo' )->andReturn( 'Test' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\expect( 'get_theme_mod' )->andReturn( '' );
+		Functions\expect( 'get_site_icon_url' )
+			->once()
+			->andReturn( 'https://example.com/favicon.png' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( 'https://example.com/favicon.png', $result['icon_url'] );
+	}
+
+	/**
+	 * Test that detect() returns empty logo URL when no logo is set.
+	 *
+	 * @return void
+	 */
+	public function test_empty_logo_when_no_custom_logo(): void {
+		Functions\expect( 'get_bloginfo' )->andReturn( 'Test' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\when( 'get_theme_mod' )->justReturn( '' );
+		Functions\expect( 'get_site_icon_url' )->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( '', $result['logo_url'] );
+	}
+
+	/**
+	 * Test fallback when sanitize_hex_color returns null for invalid color.
+	 *
+	 * @return void
+	 */
+	public function test_invalid_color_falls_back_to_default(): void {
+		Functions\expect( 'get_bloginfo' )->andReturn( 'Test' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\when( 'get_theme_mod' )->alias(
+			function ( string $name, $default = false ) {
+				if ( 'primary_color' === $name ) {
+					return 'not-a-color';
+				}
+				return $default;
+			}
+		);
+		Functions\expect( 'sanitize_hex_color' )
+			->once()
+			->with( 'not-a-color' )
+			->andReturn( null );
+		Functions\expect( 'get_site_icon_url' )->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( '#2563eb', $result['brand_color'] );
+	}
+
+	/**
+	 * Test that detect() returns empty logo when attachment URL lookup fails.
+	 *
+	 * @return void
+	 */
+	public function test_logo_empty_when_attachment_url_fails(): void {
+		Functions\expect( 'get_bloginfo' )->andReturn( 'Test' );
+		Functions\expect( 'sanitize_text_field' )->andReturnFirstArg();
+		Functions\when( 'get_theme_mod' )->alias(
+			function ( string $name, $default = false ) {
+				if ( 'custom_logo' === $name ) {
+					return 99;
+				}
+				return $default;
+			}
+		);
+		Functions\expect( 'wp_get_attachment_image_url' )
+			->once()
+			->with( 99, 'full' )
+			->andReturn( false );
+		Functions\expect( 'get_site_icon_url' )->andReturn( '' );
+
+		$result = AutoDetect::detect();
+
+		$this->assertSame( '', $result['logo_url'] );
+	}
+}

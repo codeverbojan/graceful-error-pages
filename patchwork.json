@@ -1,0 +1,8 @@
+{
+    "redefinable-internals": [
+        "headers_sent",
+        "header",
+        "register_shutdown_function",
+        "php_sapi_name"
+    ]
+}

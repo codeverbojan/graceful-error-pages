@@ -1,0 +1,34 @@
+name: Asset Update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.wordpress-org/**'
+      - 'readme.txt'
+
+concurrency:
+  group: asset-update
+  cancel-in-progress: true
+
+jobs:
+  update-assets:
+    name: Deploy assets to WordPress.org
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'codeverbojan'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Warn if SVN credentials missing
+        if: env.SVN_USERNAME == ''
+        run: echo "::warning::SVN_USERNAME secret not set — skipping WordPress.org asset update"
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+
+      - name: Deploy assets to WordPress.org SVN
+        if: env.SVN_USERNAME != ''
+        uses: 10up/action-wordpress-plugin-asset-update@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: graceful-error-pages

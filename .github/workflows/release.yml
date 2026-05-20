@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    name: CI checks
+    uses: ./.github/workflows/ci.yml
+    with:
+      full: true
+
+  release:
+    name: Build & Deploy
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ -n "${{ inputs.tag }}" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate changelog exists for this version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if [ -z "$VERSION" ]; then
+            echo "::error::Could not determine version from tag"
+            exit 1
+          fi
+          if ! grep -q "^= ${VERSION} =$" readme.txt; then
+            echo "::error::readme.txt is missing changelog entry for version ${VERSION}."
+            echo "::error::Run 'bash bin/release.sh ${VERSION}' to generate it before tagging."
+            exit 1
+          fi
+          echo "Changelog entry for ${VERSION} found in readme.txt"
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: wp-cli
+          coverage: none
+
+      - name: Generate .pot file
+        run: |
+          mkdir -p languages
+          wp i18n make-pot . languages/graceful-error-pages.pot --slug=graceful-error-pages
+
+      - name: Build distribution zip
+        run: |
+          mkdir -p build/graceful-error-pages
+          rsync -rc --exclude-from=.distignore . build/graceful-error-pages/
+          cd build && zip -r graceful-error-pages.zip graceful-error-pages/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: v${{ steps.version.outputs.version }}
+          files: build/graceful-error-pages.zip
+          generate_release_notes: true
+
+      - name: Warn if SVN credentials missing
+        if: env.SVN_USERNAME == ''
+        run: echo "::warning::SVN_USERNAME secret not set — skipping WordPress.org deploy"
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+
+      - name: Deploy to WordPress.org
+        if: env.SVN_USERNAME != ''
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: graceful-error-pages
+          BUILD_DIR: build/graceful-error-pages
+          ASSETS_DIR: .wordpress-org

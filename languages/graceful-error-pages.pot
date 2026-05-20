@@ -1,0 +1,372 @@
+# Copyright (C) 2026 Codever
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Graceful Error Pages 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/graceful-error-pages\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-20T22:07:42+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: graceful-error-pages\n"
+
+#. Plugin Name of the plugin
+msgid "Graceful Error Pages"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://bojanjosifoski.com/graceful-error-pages"
+msgstr ""
+
+#. Description of the plugin
+msgid "Replace WordPress's ugly error screens with branded, professional pages — in one click."
+msgstr ""
+
+#. Author of the plugin
+msgid "Codever"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://codever.io"
+msgstr ""
+
+#: src/Handler.php:40
+#: src/Handler.php:41
+msgid "Link Expired"
+msgstr ""
+
+#: src/Handler.php:42
+#: src/Handler.php:43
+#: src/Handler.php:45
+#: src/Handler.php:47
+msgid "Access Denied"
+msgstr ""
+
+#: src/Handler.php:44
+msgid "Forbidden"
+msgstr ""
+
+#: src/Handler.php:46
+msgid "Security Error"
+msgstr ""
+
+#: src/Handler.php:348
+#: src/Handler.php:434
+#: src/Preview.php:79
+#: src/TemplateEngine.php:120
+msgid "Something went wrong"
+msgstr ""
+
+#: src/Handler.php:415
+msgid "Server Error"
+msgstr ""
+
+#: src/Handler.php:435
+msgid "We encountered an unexpected error. Please try again later."
+msgstr ""
+
+#. translators: %s: default button text
+#: src/Handler.php:436
+#: src/Settings.php:550
+#: src/TemplateEngine.php:131
+#: templates/corporate.php:64
+#: templates/dark.php:62
+#: templates/friendly.php:70
+#: templates/minimal.php:62
+#: templates/starter.php:63
+msgid "Go to Homepage"
+msgstr ""
+
+#: src/Handler.php:440
+#: src/Settings.php:674
+msgid "Debug Info"
+msgstr ""
+
+#: src/Preview.php:71
+msgid "You do not have permission to preview error pages."
+msgstr ""
+
+#: src/Preview.php:80
+msgid "This is a preview of your error page. The actual error details will appear here when a real error occurs."
+msgstr ""
+
+#: src/Settings.php:198
+#: src/Settings.php:199
+msgid "Error Pages"
+msgstr ""
+
+#: src/Settings.php:244
+msgid "Settings"
+msgstr ""
+
+#: src/Settings.php:286
+msgid "Select Logo"
+msgstr ""
+
+#: src/Settings.php:287
+msgid "Use This Image"
+msgstr ""
+
+#: src/Settings.php:288
+msgid "Close preview"
+msgstr ""
+
+#: src/Settings.php:289
+msgid "Error page preview"
+msgstr ""
+
+#: src/Settings.php:312
+msgid "Preview Error Page"
+msgstr ""
+
+#: src/Settings.php:367
+msgid "Design"
+msgstr ""
+
+#: src/Settings.php:368
+msgid "Content"
+msgstr ""
+
+#: src/Settings.php:369
+msgid "Behavior"
+msgstr ""
+
+#: src/Settings.php:419
+#: src/Settings.php:422
+msgid "Template"
+msgstr ""
+
+#: src/Settings.php:444
+msgid "Logo URL"
+msgstr ""
+
+#: src/Settings.php:445
+msgid "Logo displayed on the error page. Leave blank to use the site icon."
+msgstr ""
+
+#: src/Settings.php:451
+msgid "Site Icon URL"
+msgstr ""
+
+#: src/Settings.php:452
+msgid "Fallback icon when no logo is set. Auto-detected on activation."
+msgstr ""
+
+#: src/Settings.php:458
+msgid "Brand Color"
+msgstr ""
+
+#: src/Settings.php:464
+msgid "Background Color"
+msgstr ""
+
+#: src/Settings.php:470
+msgid "Text Color"
+msgstr ""
+
+#: src/Settings.php:476
+msgid "Auto (follow system preference)"
+msgstr ""
+
+#: src/Settings.php:477
+msgid "Always dark"
+msgstr ""
+
+#: src/Settings.php:478
+msgid "Always light"
+msgstr ""
+
+#: src/Settings.php:479
+msgid "Disabled"
+msgstr ""
+
+#: src/Settings.php:483
+msgid "Dark Mode"
+msgstr ""
+
+#: src/Settings.php:512
+msgid "Site Name"
+msgstr ""
+
+#: src/Settings.php:515
+msgid "Override the site name shown on error pages. Leave blank to use Settings > General."
+msgstr ""
+
+#: src/Settings.php:523
+msgid "Error Title"
+msgstr ""
+
+#: src/Settings.php:526
+msgid "Leave blank to use the default or auto-detected title."
+msgstr ""
+
+#: src/Settings.php:534
+msgid "Error Message"
+msgstr ""
+
+#: src/Settings.php:537
+msgid "Leave blank to use the default message. Basic HTML allowed."
+msgstr ""
+
+#: src/Settings.php:545
+msgid "Primary Button Text"
+msgstr ""
+
+#. translators: %s: default button text
+#: src/Settings.php:550
+#: src/Settings.php:575
+msgid "Default: \"%s\""
+msgstr ""
+
+#: src/Settings.php:559
+msgid "Primary Button URL"
+msgstr ""
+
+#: src/Settings.php:562
+msgid "Default: homepage URL."
+msgstr ""
+
+#: src/Settings.php:570
+msgid "Secondary Button Text"
+msgstr ""
+
+#. translators: %s: default button text
+#: src/Settings.php:575
+#: src/TemplateEngine.php:133
+#: templates/corporate.php:69
+#: templates/dark.php:67
+#: templates/friendly.php:75
+#: templates/minimal.php:67
+#: templates/starter.php:68
+msgid "Go Back"
+msgstr ""
+
+#: src/Settings.php:584
+msgid "Secondary Button URL"
+msgstr ""
+
+#: src/Settings.php:587
+msgid "Leave blank to use browser back."
+msgstr ""
+
+#: src/Settings.php:595
+msgid "Support Link"
+msgstr ""
+
+#: src/Settings.php:598
+msgid "Optional link to a support or contact page."
+msgstr ""
+
+#: src/Settings.php:606
+msgid "Copyright Text"
+msgstr ""
+
+#. translators: %s: example merge tag usage
+#: src/Settings.php:611
+msgid "Default: \"&copy; %s\". Supports merge tags."
+msgstr ""
+
+#: src/Settings.php:620
+msgid "Available Merge Tags"
+msgstr ""
+
+#: src/Settings.php:622
+msgid "Your site name"
+msgstr ""
+
+#: src/Settings.php:623
+msgid "Current year"
+msgstr ""
+
+#: src/Settings.php:624
+msgid "Your site homepage URL"
+msgstr ""
+
+#: src/Settings.php:625
+msgid "The URL to go back to"
+msgstr ""
+
+#: src/Settings.php:641
+msgid "Frontend only"
+msgstr ""
+
+#: src/Settings.php:642
+msgid "Admin only"
+msgstr ""
+
+#: src/Settings.php:643
+msgid "Everywhere (Frontend + Admin)"
+msgstr ""
+
+#: src/Settings.php:647
+#: src/Settings.php:650
+msgid "Scope"
+msgstr ""
+
+#: src/Settings.php:660
+msgid "Where to display custom error pages."
+msgstr ""
+
+#: src/Settings.php:667
+msgid "Fatal Error Handler"
+msgstr ""
+
+#: src/Settings.php:668
+msgid "Replace PHP fatal error screens with branded pages"
+msgstr ""
+
+#: src/Settings.php:675
+msgid "Show debug details on error pages when WP_DEBUG is enabled"
+msgstr ""
+
+#: src/Settings.php:681
+msgid "Admin Bypass"
+msgstr ""
+
+#: src/Settings.php:682
+msgid "Show default WordPress error pages to logged-in administrators"
+msgstr ""
+
+#: src/Settings.php:705
+msgid "Select Image"
+msgstr ""
+
+#: src/Settings.php:708
+msgid "Remove"
+msgstr ""
+
+#: src/TemplateEngine.php:61
+msgid "Minimal"
+msgstr ""
+
+#: src/TemplateEngine.php:62
+msgid "Corporate"
+msgstr ""
+
+#: src/TemplateEngine.php:63
+msgid "Friendly"
+msgstr ""
+
+#: src/TemplateEngine.php:64
+msgid "Dark"
+msgstr ""
+
+#: src/TemplateEngine.php:65
+msgid "Starter"
+msgstr ""
+
+#: src/TemplateEngine.php:121
+msgid "The page you were looking for could not be loaded. Please try again later."
+msgstr ""
+
+#: templates/corporate.php:86
+#: templates/dark.php:84
+#: templates/friendly.php:92
+#: templates/minimal.php:84
+#: templates/starter.php:85
+msgid "Contact Support"
+msgstr ""

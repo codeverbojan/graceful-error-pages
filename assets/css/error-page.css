@@ -1,0 +1,459 @@
+/**
+ * Graceful Error Pages — Error page styles.
+ *
+ * Self-contained: no theme or external dependencies.
+ * Loaded via <link> tag in error page templates.
+ *
+ * Design tokens use a 4px spatial scale (4, 8, 12, 16, 24, 32, 48, 64, 96).
+ * Type scale: 13 / 14 / 16 / 20 / 24 / 32.
+ *
+ * @package GracefulErrorPages
+ */
+
+/* ----------------------------------------------------------------
+   Design Tokens
+   ---------------------------------------------------------------- */
+:root {
+	--gep-brand-color: #2563eb;
+	--gep-bg-color: #f8f9fb;
+	--gep-text-color: #1c2024;
+	--gep-text-muted: #60646c;
+	--gep-border-color: #e0e1e6;
+	--gep-card-bg: #ffffff;
+	--gep-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	--gep-radius: 12px;
+	--gep-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/*
+ * Dark mode: auto|on|off|disabled.
+ * "off" and "disabled" have no rules — they inherit light defaults from :root.
+ * The dark template (.gep-template-dark) handles its own colors independently.
+ */
+
+/* Dark mode — auto (follows OS preference). */
+@media (prefers-color-scheme: dark) {
+	body.gep-error-page[data-dark-mode="auto"] {
+		--gep-bg-color: #111113;
+		--gep-text-color: #eeeef0;
+		--gep-text-muted: #9b9ba7;
+		--gep-border-color: #2e2e32;
+		--gep-card-bg: #1a1a1e;
+		--gep-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.16);
+	}
+}
+
+/* Dark mode — forced on. */
+body.gep-error-page[data-dark-mode="on"] {
+	--gep-bg-color: #111113;
+	--gep-text-color: #eeeef0;
+	--gep-text-muted: #9b9ba7;
+	--gep-border-color: #2e2e32;
+	--gep-card-bg: #1a1a1e;
+	--gep-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+/* ----------------------------------------------------------------
+   Reset
+   ---------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	height: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+
+/* ----------------------------------------------------------------
+   Base: shared across all templates
+   ---------------------------------------------------------------- */
+body.gep-error-page {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 24px;
+	font-family: var(--gep-font-family);
+	font-size: 16px;
+	line-height: 1.5;
+	color: var(--gep-text-color);
+	background-color: var(--gep-bg-color);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.gep-card {
+	width: 100%;
+	max-width: 440px;
+	padding: 48px 40px;
+	text-align: center;
+	background-color: var(--gep-card-bg);
+	border-radius: var(--gep-radius);
+	box-shadow: var(--gep-shadow);
+}
+
+/* ----------------------------------------------------------------
+   Logo / Icon
+   ---------------------------------------------------------------- */
+.gep-logo {
+	display: block;
+	max-width: 160px;
+	max-height: 48px;
+	margin: 0 auto 32px;
+	object-fit: contain;
+}
+
+.gep-icon {
+	display: block;
+	width: 40px;
+	height: 40px;
+	margin: 0 auto 32px;
+	border-radius: 50%;
+	object-fit: contain;
+}
+
+/* ----------------------------------------------------------------
+   Typography
+   ---------------------------------------------------------------- */
+.gep-title {
+	margin-bottom: 8px;
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1.3;
+	letter-spacing: -0.01em;
+	color: var(--gep-text-color);
+}
+
+.gep-message {
+	margin-bottom: 32px;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--gep-text-muted);
+}
+
+/* ----------------------------------------------------------------
+   Buttons
+   ---------------------------------------------------------------- */
+.gep-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	justify-content: center;
+}
+
+.gep-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+	padding: 0 16px;
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1;
+	text-decoration: none;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.gep-btn:focus {
+	outline: 2px solid var(--gep-brand-color);
+	outline-offset: 2px;
+}
+
+.gep-btn:focus:not(:focus-visible) {
+	outline: none;
+}
+
+.gep-btn-primary {
+	color: #ffffff;
+	background-color: var(--gep-brand-color);
+	border-color: var(--gep-brand-color);
+}
+
+.gep-btn-primary:hover {
+	filter: brightness(0.92);
+}
+
+.gep-btn-secondary {
+	color: var(--gep-text-color);
+	background-color: transparent;
+	border-color: var(--gep-border-color);
+}
+
+.gep-btn-secondary:hover {
+	background-color: var(--gep-border-color);
+}
+
+/* ----------------------------------------------------------------
+   Support Link
+   ---------------------------------------------------------------- */
+.gep-support {
+	margin-top: 24px;
+	font-size: 13px;
+}
+
+.gep-support a {
+	color: var(--gep-brand-color);
+	text-decoration: none;
+}
+
+.gep-support a:hover {
+	text-decoration: underline;
+}
+
+.gep-support a:focus {
+	outline: 2px solid var(--gep-brand-color);
+	outline-offset: 2px;
+}
+
+.gep-support a:focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* ----------------------------------------------------------------
+   Footer
+   ---------------------------------------------------------------- */
+.gep-footer {
+	margin-top: 32px;
+	font-size: 13px;
+	color: var(--gep-text-muted);
+}
+
+/* ----------------------------------------------------------------
+   Template: Dark
+   Always-dark. Its own color world — the gep-template-dark class
+   overrides tokens regardless of the data-dark-mode attribute.
+   ---------------------------------------------------------------- */
+body.gep-template-dark {
+	--gep-bg-color: #0c0c0e;
+	--gep-text-color: #ededef;
+	--gep-text-muted: #8b8b97;
+	--gep-border-color: #27272b;
+	--gep-card-bg: #18181b;
+	--gep-shadow: none;
+}
+
+body.gep-template-dark .gep-card {
+	border: 1px solid var(--gep-border-color);
+}
+
+body.gep-template-dark .gep-btn-secondary {
+	color: var(--gep-text-muted);
+}
+
+/* ----------------------------------------------------------------
+   Template: Corporate
+   Logo-forward, structured, professional. Wider card,
+   explicit visual hierarchy, separated footer.
+   ---------------------------------------------------------------- */
+body.gep-template-corporate .gep-card {
+	max-width: 520px;
+	padding: 48px;
+	text-align: start;
+	border-top: 3px solid var(--gep-brand-color);
+}
+
+body.gep-template-corporate .gep-logo {
+	max-width: 140px;
+	max-height: 40px;
+	margin-inline: 0;
+	margin-block: 0 40px;
+}
+
+body.gep-template-corporate .gep-icon {
+	margin-inline: 0;
+	margin-block: 0 40px;
+}
+
+.gep-logo-text {
+	margin-bottom: 40px;
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	color: var(--gep-text-color);
+}
+
+body.gep-template-corporate .gep-title {
+	font-size: 24px;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+
+body.gep-template-corporate .gep-actions {
+	justify-content: start;
+}
+
+body.gep-template-corporate .gep-footer {
+	margin-top: 40px;
+	padding-top: 24px;
+	border-top: 1px solid var(--gep-border-color);
+	font-size: 12px;
+}
+
+/* ----------------------------------------------------------------
+   Template: Friendly
+   Warm, soft, encouraging. Generous whitespace,
+   pill-shaped buttons, illustration-forward.
+   ---------------------------------------------------------------- */
+body.gep-template-friendly {
+	--gep-radius: 20px;
+	--gep-bg-color: #faf8f5;
+}
+
+@media (prefers-color-scheme: dark) {
+	body.gep-template-friendly[data-dark-mode="auto"] {
+		--gep-bg-color: #141210;
+	}
+}
+
+body.gep-template-friendly[data-dark-mode="on"] {
+	--gep-bg-color: #141210;
+}
+
+body.gep-template-friendly .gep-card {
+	max-width: 480px;
+	padding: 56px 40px 48px;
+}
+
+body.gep-template-friendly .gep-illustration {
+	display: block;
+	width: 72px;
+	height: 72px;
+	margin: 0 auto 24px;
+}
+
+body.gep-template-friendly .gep-title {
+	font-size: 24px;
+	font-weight: 600;
+	letter-spacing: -0.015em;
+}
+
+body.gep-template-friendly .gep-message {
+	font-size: 15px;
+	line-height: 1.65;
+}
+
+body.gep-template-friendly .gep-btn {
+	height: 40px;
+	padding: 0 24px;
+	font-size: 14px;
+	border-radius: 999px;
+}
+
+body.gep-template-friendly .gep-footer {
+	margin-top: 40px;
+}
+
+/* ----------------------------------------------------------------
+   Template: Starter
+   Bare minimum. No card, no decoration. Just readable
+   centered text with enough spacing to not look broken.
+   ---------------------------------------------------------------- */
+body.gep-template-starter {
+	padding: 32px 24px;
+}
+
+body.gep-template-starter .gep-card {
+	max-width: 480px;
+	padding: 0;
+	background-color: transparent;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.gep-template-starter .gep-logo {
+	max-width: 120px;
+	max-height: 36px;
+	margin-bottom: 24px;
+}
+
+body.gep-template-starter .gep-icon {
+	width: 32px;
+	height: 32px;
+	margin-bottom: 24px;
+}
+
+body.gep-template-starter .gep-title {
+	margin-bottom: 4px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+body.gep-template-starter .gep-message {
+	margin-bottom: 24px;
+	font-size: 14px;
+}
+
+body.gep-template-starter .gep-btn {
+	height: 32px;
+	padding: 0 12px;
+	font-size: 13px;
+	border-radius: 6px;
+}
+
+body.gep-template-starter .gep-footer {
+	margin-top: 24px;
+	font-size: 12px;
+}
+
+/* ----------------------------------------------------------------
+   Responsive: 480px and below
+   ---------------------------------------------------------------- */
+@media (max-width: 480px) {
+	body.gep-error-page {
+		padding: 16px;
+	}
+
+	.gep-card {
+		padding: 32px 24px;
+	}
+
+	body.gep-template-corporate .gep-card {
+		padding: 32px 24px;
+	}
+
+	body.gep-template-corporate .gep-title {
+		font-size: 20px;
+	}
+
+	body.gep-template-friendly .gep-card {
+		padding: 40px 24px 32px;
+	}
+
+	.gep-actions {
+		flex-direction: column;
+	}
+
+	.gep-btn {
+		width: 100%;
+	}
+}
+
+/* ----------------------------------------------------------------
+   Responsive: 320px — smallest supported viewport
+   ---------------------------------------------------------------- */
+@media (max-width: 320px) {
+	body.gep-error-page {
+		padding: 12px;
+	}
+
+	.gep-card {
+		padding: 24px 16px;
+	}
+
+	.gep-title {
+		font-size: 18px;
+	}
+
+	.gep-message {
+		font-size: 13px;
+	}
+}

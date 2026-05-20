@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 772 250" width="772" height="250">
+  <defs>
+    <linearGradient id="banner-bg" x1="0" y1="0" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="772" height="250" fill="url(#banner-bg)"/>
+  <rect x="40" y="50" width="120" height="150" rx="10" fill="#fff" opacity="0.12"/>
+  <rect x="56" y="70" width="88" height="6" rx="3" fill="#fff" opacity="0.3"/>
+  <rect x="56" y="86" width="60" height="4" rx="2" fill="#fff" opacity="0.15"/>
+  <rect x="56" y="96" width="72" height="4" rx="2" fill="#fff" opacity="0.15"/>
+  <rect x="56" y="106" width="48" height="4" rx="2" fill="#fff" opacity="0.15"/>
+  <rect x="68" y="124" width="64" height="20" rx="10" fill="#ef4444" opacity="0.8"/>
+  <line x1="86" y1="130" x2="98" y2="140" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="98" y1="130" x2="86" y2="140" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  <text x="200" y="130" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#94a3b8" letter-spacing="1">→</text>
+  <rect x="240" y="50" width="120" height="150" rx="10" fill="#fff" opacity="0.95"/>
+  <rect x="256" y="70" width="88" height="6" rx="3" fill="#2563eb" opacity="0.25"/>
+  <rect x="256" y="86" width="60" height="4" rx="2" fill="#64748b" opacity="0.5"/>
+  <rect x="256" y="96" width="72" height="4" rx="2" fill="#64748b" opacity="0.5"/>
+  <rect x="256" y="106" width="48" height="4" rx="2" fill="#64748b" opacity="0.5"/>
+  <rect x="268" y="124" width="64" height="20" rx="10" fill="#2563eb"/>
+  <circle cx="340" cy="176" r="14" fill="#22c55e" opacity="0.9"/>
+  <path d="M333 176 l5 5 l9-9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <text x="420" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="700" fill="#f8fafc">Graceful</text>
+  <text x="420" y="145" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="700" fill="#f8fafc">Error Pages</text>
+  <text x="420" y="175" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94a3b8">Branded error screens for WordPress</text>
+</svg>

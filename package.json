@@ -1,0 +1,25 @@
+{
+	"name": "graceful-error-pages",
+	"version": "1.0.0",
+	"description": "Replace WordPress's ugly error screens with branded, professional pages.",
+	"author": "Codever",
+	"license": "GPL-2.0-or-later",
+	"private": true,
+	"scripts": {
+		"env:start": "wp-env start",
+		"env:stop": "wp-env stop",
+		"env:clean": "wp-env clean all",
+		"env:reset": "wp-env destroy && wp-env start",
+		"env:cli": "wp-env run cli",
+		"plugin-check": "wp-env run cli -- wp plugin check graceful-error-pages",
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@wordpress/env": "11.5.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.0.2"
+	},
+	"lint-staged": {
+		"*.php": "vendor/bin/phpcs --no-colors"
+	}
+}

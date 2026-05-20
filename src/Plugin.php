@@ -1,0 +1,126 @@
+<?php
+/**
+ * Plugin bootstrap.
+ *
+ * @package GracefulErrorPages
+ */
+
+declare( strict_types=1 );
+
+namespace GracefulErrorPages;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Main plugin class.
+ *
+ * Boots the plugin via a static factory method. Not a singleton — returns a new
+ * instance on first boot. Subsequent calls return the same instance (boot guard).
+ * The instance is stored in $GLOBALS['gep_plugin'] by the main plugin file.
+ */
+class Plugin {
+
+	/**
+	 * Whether the plugin has been booted.
+	 *
+	 * @var bool
+	 */
+	private static bool $booted = false;
+
+	/**
+	 * The booted instance.
+	 *
+	 * @var self|null
+	 */
+	private static ?self $instance = null;
+
+	/**
+	 * Constructor.
+	 */
+	private function __construct() {
+	}
+
+	/**
+	 * Boot the plugin.
+	 *
+	 * Returns the existing instance if already booted.
+	 *
+	 * @return self
+	 */
+	public static function boot(): self {
+		if ( self::$booted && self::$instance instanceof self ) {
+			return self::$instance;
+		}
+
+		self::$instance = new self();
+		self::$instance->register_hooks();
+		self::$booted = true;
+
+		return self::$instance;
+	}
+
+	/**
+	 * Register all plugin hooks.
+	 *
+	 * @return void
+	 */
+	private function register_hooks(): void {
+		register_activation_hook( GEP_FILE, [ $this, 'activate' ] );
+		register_deactivation_hook( GEP_FILE, [ $this, 'deactivate' ] );
+
+		$template_engine = new TemplateEngine();
+
+		$handler = new Handler( $template_engine );
+		$handler->register();
+
+		if ( is_admin() ) {
+			$settings = new Settings();
+			$settings->register();
+
+			$preview = new Preview( $template_engine );
+			$preview->register();
+		}
+	}
+
+	/**
+	 * Plugin activation callback.
+	 *
+	 * @return void
+	 */
+	public function activate(): void {
+		$detected = AutoDetect::detect();
+
+		add_option( 'gep_site_name', $detected['site_name'] );
+		add_option( 'gep_logo_url', $detected['logo_url'] );
+		add_option( 'gep_icon_url', $detected['icon_url'] );
+		add_option( 'gep_brand_color', $detected['brand_color'] );
+		add_option( 'gep_template', 'minimal' );
+		add_option( 'gep_scope', 'frontend' );
+		add_option( 'gep_dark_mode', 'auto' );
+		add_option( 'gep_fatal_errors', 1 );
+		add_option( 'gep_show_debug', 1 );
+		add_option( 'gep_admin_bypass', 1 );
+	}
+
+	/**
+	 * Plugin deactivation callback.
+	 *
+	 * @return void
+	 */
+	public function deactivate(): void {
+	}
+
+	/**
+	 * Reset boot state.
+	 *
+	 * @internal Only for use in tests.
+	 *
+	 * @return void
+	 */
+	public static function reset(): void {
+		self::$booted   = false;
+		self::$instance = null;
+	}
+}

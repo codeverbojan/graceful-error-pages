@@ -1,0 +1,53 @@
+# Development files excluded from the wordpress.org release zip.
+# Patterns without a leading / match anywhere in the tree.
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.bak
+*.zip
+*.log
+
+# Config and tooling (root only).
+/.editorconfig
+/.gitignore
+/.distignore
+/.git
+/.phpunit.cache
+/.phpunit.result.cache
+/.wp-env.json
+/.wp-env.override.json
+/.wordpress-org
+/composer.json
+/composer.lock
+/package.json
+/package-lock.json
+/phpcs.xml.dist
+/phpcs.xml
+/phpstan.neon
+/phpstan-constants.php
+/phpunit.xml.dist
+/phpunit.xml
+/patchwork.json
+
+# Dependencies and test output.
+/node_modules
+/vendor
+/tests
+/test-results
+
+# GitHub, scripts, and contributing (development only).
+/.github
+/.husky
+/.claude
+/bin
+/docs
+/private
+/design-reference
+/build
+/CONTRIBUTING.md
+/CODE_OF_CONDUCT.md
+/SECURITY.md
+/README.md
+/CHANGELOG.md
+/CLAUDE.md

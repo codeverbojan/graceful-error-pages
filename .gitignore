@@ -1,0 +1,53 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Build output
+/assets/build/
+
+# PHPUnit
+/.phpunit.cache/
+/.phpunit.result.cache
+/coverage/
+
+# WordPress test suite
+/tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# wp-env (override file only -- .wp-env.json is committed)
+/.wp-env.override.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/tests/e2e/.auth/
+/tests/e2e/.fixtures.json
+
+# Docs and specs (dev-only, not tracked in dist)
+/docs/
+
+# Private scripts (dev-only)
+/private/
+
+# Design reference images (dev-only)
+/design-reference/
+
+# Backup files
+*.backup
+*.bak
+
+# Distribution
+/build/
+*.zip
