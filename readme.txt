@@ -4,7 +4,7 @@ Tags: error-page, wp-die, branding, error-handling, custom-error
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,6 +99,10 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 
 == Changelog ==
 
+= 1.0.2 =
+* Add FSE/block theme brand color detection, fix PCP warnings
+
+
 = 1.0.1 =
 * Add @wordpress/scripts build process, rename prefix to gcep, upgrade PHPStan 2
 
@@ -121,6 +125,9 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 * Full i18n support
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Add FSE/block theme brand color detection, fix PCP warnings
 
 = 1.0.1 =
 Add @wordpress/scripts build process, rename prefix to gcep, upgrade PHPStan 2

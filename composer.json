@@ -2,7 +2,7 @@
 	"name": "codever/graceful-error-pages",
 	"description": "Replace WordPress's ugly error screens with branded, professional pages.",
 	"type": "wordpress-plugin",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"license": "GPL-2.0-or-later",
 	"authors": [
 		{

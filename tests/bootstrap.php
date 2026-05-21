@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'GCEP_VERSION' ) ) {
-	define( 'GCEP_VERSION', '1.0.1' );
+	define( 'GCEP_VERSION', '1.0.2' );
 }
 if ( ! defined( 'GCEP_FILE' ) ) {
 	define( 'GCEP_FILE', dirname( __DIR__ ) . '/graceful-error-pages.php' );

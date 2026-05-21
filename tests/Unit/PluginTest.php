@@ -47,7 +47,7 @@ class PluginTest extends TestCase {
 	 * @return void
 	 */
 	public function test_version_constant(): void {
-		$this->assertSame( '1.0.1', GCEP_VERSION );
+		$this->assertSame( '1.0.2', GCEP_VERSION );
 	}
 
 	/**

@@ -11,7 +11,7 @@
  * Plugin Name:       Graceful Error Pages
  * Plugin URI:        https://bojanjosifoski.com/graceful-error-pages
  * Description:       Replace WordPress's ugly error screens with branded, professional pages — in one click.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 6.4
  * Requires PHP:      8.0
  * Tested up to:      7.0
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'GCEP_VERSION' ) ) {
-	define( 'GCEP_VERSION', '1.0.1' );
+	define( 'GCEP_VERSION', '1.0.2' );
 }
 if ( ! defined( 'GCEP_FILE' ) ) {
 	define( 'GCEP_FILE', __FILE__ );
