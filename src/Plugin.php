@@ -70,8 +70,6 @@ class Plugin {
 		register_activation_hook( GCEP_FILE, [ $this, 'activate' ] );
 		register_deactivation_hook( GCEP_FILE, [ $this, 'deactivate' ] );
 
-		add_action( 'init', [ $this, 'load_textdomain' ] );
-
 		$template_engine = new TemplateEngine();
 
 		$handler = new Handler( $template_engine );
@@ -84,15 +82,6 @@ class Plugin {
 			$preview = new Preview( $template_engine );
 			$preview->register();
 		}
-	}
-
-	/**
-	 * Load plugin text domain for translations.
-	 *
-	 * @return void
-	 */
-	public function load_textdomain(): void {
-		load_plugin_textdomain( 'graceful-error-pages', false, dirname( plugin_basename( GCEP_FILE ) ) . '/languages' );
 	}
 
 	/**

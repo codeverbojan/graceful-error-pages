@@ -1,6 +1,6 @@
 <?php
 /**
- * Brand auto-detection from WordPress Customizer settings.
+ * Brand auto-detection from WordPress settings and theme.json.
  *
  * @package GracefulErrorPages
  */
@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Detects site branding (name, logo, icon, color) from WordPress settings.
+ * Detects site branding from WordPress settings, Customizer, and theme.json.
  *
- * Used on activation to populate default options so the error page
- * is branded immediately without configuration.
+ * Supports both classic and block (FSE) themes. Used on activation to
+ * populate default options so the error page is branded immediately.
  */
 class AutoDetect {
 
@@ -54,11 +54,10 @@ class AutoDetect {
 	}
 
 	/**
-	 * Detect the custom logo URL from the Customizer.
+	 * Detect the custom logo URL.
 	 *
-	 * Uses get_theme_mod('custom_logo') for the attachment ID, then
-	 * wp_get_attachment_image_url() for the actual URL.
-	 * Note: get_custom_logo() returns HTML, not a URL.
+	 * Works for both classic and block themes. WordPress syncs the
+	 * site_logo option to the custom_logo theme mod since WP 5.8.
 	 *
 	 * @return string
 	 */
@@ -86,11 +85,77 @@ class AutoDetect {
 	}
 
 	/**
-	 * Detect the brand color from the Customizer.
+	 * Brand-like palette slugs to search, in priority order.
+	 *
+	 * Covers core block themes: TT2/TT3 use "primary", TT4 uses "accent",
+	 * TT5 uses "accent-1". Third-party themes may use any of these.
+	 *
+	 * @var array<int, string>
+	 */
+	private const BRAND_SLUGS = [ 'primary', 'accent', 'accent-1', 'accent-2', 'accent-3' ];
+
+	/**
+	 * Detect the brand color from theme.json palette or Customizer.
+	 *
+	 * For block/hybrid themes with a theme.json, reads the color palette
+	 * via wp_get_global_settings() and picks the first brand-like slug.
+	 * Falls back to the Customizer's primary_color theme mod for classic themes.
 	 *
 	 * @return string
 	 */
 	private static function detect_brand_color(): string {
+		$color = self::detect_color_from_theme_json();
+
+		if ( '' !== $color ) {
+			return $color;
+		}
+
+		return self::detect_color_from_customizer();
+	}
+
+	/**
+	 * Read the brand color from the theme.json color palette.
+	 *
+	 * @return string Hex color or empty string if not found.
+	 */
+	private static function detect_color_from_theme_json(): string {
+		if ( ! function_exists( 'wp_get_global_settings' ) ) {
+			return '';
+		}
+
+		$palette = wp_get_global_settings( [ 'color', 'palette', 'theme' ] );
+
+		if ( ! is_array( $palette ) || empty( $palette ) ) {
+			return '';
+		}
+
+		foreach ( self::BRAND_SLUGS as $slug ) {
+			foreach ( $palette as $entry ) {
+				if ( ! is_array( $entry ) ) {
+					continue;
+				}
+
+				if ( ! isset( $entry['slug'], $entry['color'] ) || $slug !== $entry['slug'] ) {
+					continue;
+				}
+
+				$hex = sanitize_hex_color( $entry['color'] );
+
+				if ( is_string( $hex ) && '' !== $hex ) {
+					return $hex;
+				}
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Read the brand color from the Customizer theme mod.
+	 *
+	 * @return string Hex color or DEFAULT_BRAND_COLOR.
+	 */
+	private static function detect_color_from_customizer(): string {
 		$color = get_theme_mod( 'primary_color', '' );
 
 		if ( ! is_string( $color ) || '' === $color ) {

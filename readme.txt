@@ -52,8 +52,8 @@ matches your brand — automatically, the moment you activate it.
 
 = Does this work out of the box? =
 
-Yes. On activation the plugin auto-detects your site name, logo, and brand color from the
-WordPress Customizer. No configuration is required.
+Yes. On activation the plugin auto-detects your site name, logo, and brand color from your
+WordPress settings. Works with both classic and block (FSE) themes. No configuration is required.
 
 = Which error screens does this replace? =
 

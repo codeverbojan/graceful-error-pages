@@ -185,7 +185,7 @@ class Preview {
 	private function get_preview_param( string $name, string $fallback, string $type = 'text' ): string {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Nonce already verified in handle().
 		if ( isset( $_GET[ $name ] ) ) {
-			$raw = wp_unslash( $_GET[ $name ] );
+			$raw = sanitize_text_field( wp_unslash( $_GET[ $name ] ) );
 			return $this->sanitize_by_type( $raw, $type );
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
