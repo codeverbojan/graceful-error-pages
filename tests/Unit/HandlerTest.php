@@ -838,4 +838,133 @@ class HandlerTest extends TestCase {
 			[ 'text_direction' => 'invalid', 'exit' => false ]
 		);
 	}
+
+	/**
+	 * Test: WP_Error with multiple messages includes all of them.
+	 *
+	 * @return void
+	 */
+	public function test_handle_wp_die_wp_error_multiple_messages(): void {
+		Functions\when( 'wp_parse_args' )->alias(
+			function ( $args, $defaults = [] ) {
+				return array_merge( $defaults, (array) $args );
+			}
+		);
+		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
+		Functions\when( 'headers_sent' )->justReturn( true );
+
+		$error = new \WP_Error( 'first', 'First error.' );
+		$error->add( 'second', 'Second error.' );
+		$error->add( 'third', 'Third error.' );
+
+		$this->mock_engine
+			->expects( $this->once() )
+			->method( 'render' )
+			->with(
+				'minimal',
+				$this->callback(
+					function ( array $ctx ): bool {
+						return "First error.\nSecond error.\nThird error." === $ctx['error_message'];
+					}
+				)
+			)
+			->willReturn( '<html>Multi</html>' );
+
+		$this->expectOutputString( '<html>Multi</html>' );
+
+		$this->handler->handle_wp_die( $error, '', [ 'exit' => false ] );
+	}
+
+	/**
+	 * Test: WP_Error with single message returns just the string.
+	 *
+	 * @return void
+	 */
+	public function test_handle_wp_die_wp_error_single_message(): void {
+		Functions\when( 'wp_parse_args' )->alias(
+			function ( $args, $defaults = [] ) {
+				return array_merge( $defaults, (array) $args );
+			}
+		);
+		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
+		Functions\when( 'headers_sent' )->justReturn( true );
+
+		$error = new \WP_Error( 'only', 'Only error.' );
+
+		$this->mock_engine
+			->expects( $this->once() )
+			->method( 'render' )
+			->with(
+				'minimal',
+				$this->callback(
+					function ( array $ctx ): bool {
+						return 'Only error.' === $ctx['error_message'];
+					}
+				)
+			)
+			->willReturn( '<html>Single</html>' );
+
+		$this->expectOutputString( '<html>Single</html>' );
+
+		$this->handler->handle_wp_die( $error, '', [ 'exit' => false ] );
+	}
+
+	/**
+	 * Test: register() allocates reserved memory.
+	 *
+	 * @return void
+	 */
+	public function test_register_allocates_reserved_memory(): void {
+		Functions\when( 'add_filter' )->justReturn( true );
+
+		$this->handler->register();
+
+		$ref = new \ReflectionProperty( Handler::class, 'reserved_memory' );
+		$ref->setAccessible( true );
+		$value = $ref->getValue( $this->handler );
+
+		$this->assertIsString( $value );
+		$this->assertSame( 16384, strlen( $value ) );
+	}
+
+	/**
+	 * Test: handle_fatal_error frees reserved memory.
+	 *
+	 * @return void
+	 */
+	public function test_handle_fatal_error_frees_reserved_memory(): void {
+		Functions\when( 'add_filter' )->justReturn( true );
+
+		$this->handler->register();
+
+		$ref = new \ReflectionProperty( Handler::class, 'reserved_memory' );
+		$ref->setAccessible( true );
+
+		$this->assertNotNull( $ref->getValue( $this->handler ) );
+
+		$this->handler->handle_fatal_error();
+
+		$this->assertNull( $ref->getValue( $this->handler ) );
+	}
+
+	/**
+	 * Test: should_skip returns true for Customizer preview.
+	 *
+	 * @return void
+	 */
+	public function test_filter_returns_default_for_customizer_preview(): void {
+		$default = static function () {};
+
+		Functions\when( 'php_sapi_name' )->justReturn( 'apache2handler' );
+		Functions\when( 'wp_doing_ajax' )->justReturn( false );
+		Functions\when( 'wp_is_json_request' )->justReturn( false );
+		Functions\when( 'rest_get_url_prefix' )->justReturn( 'wp-json' );
+		Functions\when( 'is_customize_preview' )->justReturn( true );
+		Functions\when( 'is_admin' )->justReturn( false );
+		Functions\when( 'current_user_can' )->justReturn( false );
+
+		$result = $this->handler->filter_wp_die_handler( $default );
+
+		$this->assertSame( $default, $result );
+	}
 }

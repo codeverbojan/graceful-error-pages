@@ -4,3 +4,5 @@ parameters:
 		- src
 	bootstrapFiles:
 		- phpstan-constants.php
+	ignoreErrors:
+		- '#Property GracefulErrorPages\\Handler::\$reserved_memory is never read, only written#'

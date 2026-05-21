@@ -205,25 +205,18 @@ if ( ! class_exists( 'WP_Error' ) ) {
 	// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound, Squiz.Classes.ClassFileName.NoMatch
 	class WP_Error {
 		/**
-		 * Error code.
+		 * Error storage: code => [ messages ].
 		 *
-		 * @var string
+		 * @var array<string, array<string>>
 		 */
-		private string $code;
+		private array $errors = [];
 
 		/**
-		 * Error message.
+		 * Error data storage: code => data.
 		 *
-		 * @var string
+		 * @var array<string, mixed>
 		 */
-		private string $message;
-
-		/**
-		 * Error data.
-		 *
-		 * @var mixed
-		 */
-		private $data;
+		private array $error_data = [];
 
 		/**
 		 * Constructor.
@@ -233,36 +226,67 @@ if ( ! class_exists( 'WP_Error' ) ) {
 		 * @param mixed  $data    Error data.
 		 */
 		public function __construct( string $code = '', string $message = '', $data = '' ) {
-			$this->code    = $code;
-			$this->message = $message;
-			$this->data    = $data;
+			if ( '' !== $code ) {
+				$this->add( $code, $message, $data );
+			}
 		}
 
 		/**
-		 * Get error code.
+		 * Add an error.
+		 *
+		 * @param string $code    Error code.
+		 * @param string $message Error message.
+		 * @param mixed  $data    Error data.
+		 * @return void
+		 */
+		public function add( string $code, string $message, $data = '' ): void {
+			$this->errors[ $code ][] = $message;
+			if ( '' !== $data ) {
+				$this->error_data[ $code ] = $data;
+			}
+		}
+
+		/**
+		 * Get first error code.
 		 *
 		 * @return string
 		 */
 		public function get_error_code(): string {
-			return $this->code;
+			$codes = array_keys( $this->errors );
+			return ! empty( $codes ) ? $codes[0] : '';
 		}
 
 		/**
-		 * Get error message.
+		 * Get first error message.
 		 *
 		 * @return string
 		 */
 		public function get_error_message(): string {
-			return $this->message;
+			$code = $this->get_error_code();
+			return isset( $this->errors[ $code ][0] ) ? $this->errors[ $code ][0] : '';
 		}
 
 		/**
-		 * Get error data.
+		 * Get all error messages across all codes.
+		 *
+		 * @return array<string>
+		 */
+		public function get_error_messages(): array {
+			$messages = [];
+			foreach ( $this->errors as $code_messages ) {
+				$messages = array_merge( $messages, $code_messages );
+			}
+			return $messages;
+		}
+
+		/**
+		 * Get error data for a code.
 		 *
 		 * @return mixed
 		 */
 		public function get_error_data() {
-			return $this->data;
+			$code = $this->get_error_code();
+			return $this->error_data[ $code ] ?? '';
 		}
 	}
 }

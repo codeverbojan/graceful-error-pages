@@ -48,12 +48,21 @@ class Handler {
 		];
 	}
 
+	private const RESERVED_MEMORY_SIZE = 16384;
+
 	/**
 	 * The template engine.
 	 *
 	 * @var TemplateEngine
 	 */
 	private TemplateEngine $template_engine;
+
+	/**
+	 * Reserved memory freed during OOM to allow the shutdown handler to run.
+	 *
+	 * @var string|null
+	 */
+	private ?string $reserved_memory = null;
 
 	/**
 	 * Constructor.
@@ -72,6 +81,7 @@ class Handler {
 	public function register(): void {
 		add_filter( 'wp_die_handler', [ $this, 'filter_wp_die_handler' ] );
 		register_shutdown_function( [ $this, 'handle_fatal_error' ] );
+		$this->reserved_memory = str_repeat( 'x', self::RESERVED_MEMORY_SIZE );
 	}
 
 	/**
@@ -184,10 +194,17 @@ class Handler {
 	 * @return void
 	 */
 	public function handle_fatal_error(): void {
+		$this->reserved_memory = null;
+
 		$error = error_get_last();
 
 		if ( null === $error || ! in_array( $error['type'], self::FATAL_ERROR_TYPES, true ) ) {
 			return;
+		}
+
+		if ( str_contains( $error['message'], 'Allowed memory size' ) ) {
+			// phpcs:ignore WordPress.PHP.IniSet.memory_limit_Disallowed,WordPress.PHP.NoSilencedErrors.Discouraged -- Required to render error page after OOM; wp_raise_memory_limit() is unavailable in shutdown context.
+			@ini_set( 'memory_limit', (string) ( memory_get_usage() + 5 * 1024 * 1024 ) );
 		}
 
 		if ( $this->is_cli() ) {
@@ -213,8 +230,14 @@ class Handler {
 			return;
 		}
 
+		if ( headers_sent() ) {
+			return;
+		}
+
 		while ( ob_get_level() ) {
-			ob_end_clean();
+			if ( ! @ob_end_clean() ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- Prevent infinite loop on buffer callback failure.
+				break;
+			}
 		}
 
 		$this->render_fatal_html( $error );
@@ -239,6 +262,10 @@ class Handler {
 		}
 
 		if ( $this->is_rest_request() ) {
+			return true;
+		}
+
+		if ( function_exists( 'is_customize_preview' ) && is_customize_preview() ) {
 			return true;
 		}
 
@@ -315,7 +342,13 @@ class Handler {
 	 */
 	private function normalize_message( $message ): string {
 		if ( $message instanceof \WP_Error ) {
-			return $message->get_error_message();
+			$messages = $message->get_error_messages();
+
+			if ( count( $messages ) <= 1 ) {
+				return $message->get_error_message();
+			}
+
+			return implode( "\n", $messages );
 		}
 
 		if ( is_scalar( $message ) || ( is_object( $message ) && method_exists( $message, '__toString' ) ) ) {
@@ -356,7 +389,9 @@ class Handler {
 	 */
 	private function send_fatal_json( array $error ): void {
 		while ( ob_get_level() ) {
-			ob_end_clean();
+			if ( ! @ob_end_clean() ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- Prevent infinite loop on buffer callback failure.
+				break;
+			}
 		}
 
 		if ( ! headers_sent() ) {
