@@ -4,7 +4,7 @@ Tags: error-page, wp-die, branding, error-handling, custom-error
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,6 +99,10 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 
 == Changelog ==
 
+= 1.0.1 =
+* Add @wordpress/scripts build process, rename prefix to gcep, upgrade PHPStan 2
+
+
 = 1.0.0 =
 * Initial commit — Graceful Error Pages WordPress plugin
 * Fix: Wp.org compliance audit fixes
@@ -117,6 +121,9 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 * Full i18n support
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Add @wordpress/scripts build process, rename prefix to gcep, upgrade PHPStan 2
 
 = 1.0.0 =
 1 new feature(s), 3 fix(es).
