@@ -100,6 +100,13 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 == Changelog ==
 
 = 1.0.0 =
+* Initial commit — Graceful Error Pages WordPress plugin
+* Fix: Wp.org compliance audit fixes
+* Fix: Pin composer platform to PHP 8.1 for CI matrix compatibility
+* Fix: Harden error handler for real-world edge cases
+
+
+= 1.0.0 =
 * Initial release
 * Custom wp_die() handler with branded error pages
 * PHP fatal error shutdown handler with self-contained styling
@@ -110,6 +117,9 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 * Full i18n support
 
 == Upgrade Notice ==
+
+= 1.0.0 =
+1 new feature(s), 3 fix(es).
 
 = 1.0.0 =
 Initial release.
