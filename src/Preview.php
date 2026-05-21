@@ -24,14 +24,14 @@ class Preview {
 	 *
 	 * @var string
 	 */
-	public const ACTION = 'gep_preview';
+	public const ACTION = 'gcep_preview';
 
 	/**
 	 * The nonce action string.
 	 *
 	 * @var string
 	 */
-	public const NONCE_ACTION = 'gep_preview';
+	public const NONCE_ACTION = 'gcep_preview';
 
 	/**
 	 * The template engine instance.
@@ -74,7 +74,7 @@ class Preview {
 
 		check_ajax_referer( self::NONCE_ACTION );
 
-		$template = $this->get_preview_param( 'gep_template', 'minimal' );
+		$template = $this->get_preview_param( 'gcep_template', 'minimal' );
 		$valid    = array_keys( TemplateEngine::get_available_templates() );
 		if ( ! in_array( $template, $valid, true ) ) {
 			$template = 'minimal';
@@ -109,12 +109,12 @@ class Preview {
 	 * @return array<string, mixed>
 	 */
 	private function build_preview_context(): array {
-		$error_title = $this->get_preview_param( 'gep_error_title', '' );
+		$error_title = $this->get_preview_param( 'gcep_error_title', '' );
 		if ( '' === $error_title ) {
 			$error_title = __( 'Something went wrong', 'graceful-error-pages' );
 		}
 
-		$error_message = $this->get_preview_param( 'gep_error_message', '', 'kses' );
+		$error_message = $this->get_preview_param( 'gcep_error_message', '', 'kses' );
 		if ( '' === $error_message ) {
 			$error_message = __( 'This is a preview of your error page. The actual error details will appear here when a real error occurs.', 'graceful-error-pages' );
 		}
@@ -128,11 +128,11 @@ class Preview {
 		];
 
 		$url_params = [
-			'logo_url'          => 'gep_logo_url',
-			'icon_url'          => 'gep_icon_url',
-			'primary_btn_url'   => 'gep_primary_btn_url',
-			'secondary_btn_url' => 'gep_secondary_btn_url',
-			'support_link'      => 'gep_support_link',
+			'logo_url'          => 'gcep_logo_url',
+			'icon_url'          => 'gcep_icon_url',
+			'primary_btn_url'   => 'gcep_primary_btn_url',
+			'secondary_btn_url' => 'gcep_secondary_btn_url',
+			'support_link'      => 'gcep_support_link',
 		];
 
 		foreach ( $url_params as $key => $option_name ) {
@@ -143,9 +143,9 @@ class Preview {
 		}
 
 		$color_params = [
-			'brand_color' => 'gep_brand_color',
-			'bg_color'    => 'gep_bg_color',
-			'text_color'  => 'gep_text_color',
+			'brand_color' => 'gcep_brand_color',
+			'bg_color'    => 'gcep_bg_color',
+			'text_color'  => 'gcep_text_color',
 		];
 
 		foreach ( $color_params as $key => $option_name ) {
@@ -156,11 +156,11 @@ class Preview {
 		}
 
 		$text_params = [
-			'dark_mode'          => 'gep_dark_mode',
-			'site_name'          => 'gep_site_name',
-			'primary_btn_text'   => 'gep_primary_btn_text',
-			'secondary_btn_text' => 'gep_secondary_btn_text',
-			'copyright'          => 'gep_copyright',
+			'dark_mode'          => 'gcep_dark_mode',
+			'site_name'          => 'gcep_site_name',
+			'primary_btn_text'   => 'gcep_primary_btn_text',
+			'secondary_btn_text' => 'gcep_secondary_btn_text',
+			'copyright'          => 'gcep_copyright',
 		];
 
 		foreach ( $text_params as $key => $option_name ) {
@@ -177,7 +177,7 @@ class Preview {
 	 * Read a preview parameter from the query string, falling back to the
 	 * saved option value.
 	 *
-	 * @param string $name     The option/parameter name (e.g. 'gep_template').
+	 * @param string $name     The option/parameter name (e.g. 'gcep_template').
 	 * @param string $fallback Fallback if neither query param nor option exists.
 	 * @param string $type     Sanitization type: 'text' (default), 'url', 'color', or 'kses'.
 	 * @return string

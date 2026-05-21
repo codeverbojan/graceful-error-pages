@@ -105,24 +105,24 @@ class SettingsTest extends TestCase {
 
 		$option_names = array_column( $registered, 'option' );
 
-		$this->assertContains( 'gep_template', $option_names );
-		$this->assertContains( 'gep_logo_url', $option_names );
-		$this->assertContains( 'gep_icon_url', $option_names );
-		$this->assertContains( 'gep_brand_color', $option_names );
-		$this->assertContains( 'gep_bg_color', $option_names );
-		$this->assertContains( 'gep_text_color', $option_names );
-		$this->assertContains( 'gep_dark_mode', $option_names );
-		$this->assertContains( 'gep_site_name', $option_names );
-		$this->assertContains( 'gep_error_title', $option_names );
-		$this->assertContains( 'gep_error_message', $option_names );
-		$this->assertContains( 'gep_scope', $option_names );
-		$this->assertContains( 'gep_fatal_errors', $option_names );
-		$this->assertContains( 'gep_show_debug', $option_names );
-		$this->assertContains( 'gep_admin_bypass', $option_names );
+		$this->assertContains( 'gcep_template', $option_names );
+		$this->assertContains( 'gcep_logo_url', $option_names );
+		$this->assertContains( 'gcep_icon_url', $option_names );
+		$this->assertContains( 'gcep_brand_color', $option_names );
+		$this->assertContains( 'gcep_bg_color', $option_names );
+		$this->assertContains( 'gcep_text_color', $option_names );
+		$this->assertContains( 'gcep_dark_mode', $option_names );
+		$this->assertContains( 'gcep_site_name', $option_names );
+		$this->assertContains( 'gcep_error_title', $option_names );
+		$this->assertContains( 'gcep_error_message', $option_names );
+		$this->assertContains( 'gcep_scope', $option_names );
+		$this->assertContains( 'gcep_fatal_errors', $option_names );
+		$this->assertContains( 'gcep_show_debug', $option_names );
+		$this->assertContains( 'gcep_admin_bypass', $option_names );
 	}
 
 	/**
-	 * Test design options are registered under gep_design group.
+	 * Test design options are registered under gcep_design group.
 	 *
 	 * @return void
 	 */
@@ -137,13 +137,13 @@ class SettingsTest extends TestCase {
 
 		$this->settings->register_settings();
 
-		$this->assertSame( 'gep_design', $registered['gep_template'] );
-		$this->assertSame( 'gep_design', $registered['gep_brand_color'] );
-		$this->assertSame( 'gep_design', $registered['gep_dark_mode'] );
+		$this->assertSame( 'gcep_design', $registered['gcep_template'] );
+		$this->assertSame( 'gcep_design', $registered['gcep_brand_color'] );
+		$this->assertSame( 'gcep_design', $registered['gcep_dark_mode'] );
 	}
 
 	/**
-	 * Test content options are registered under gep_content group.
+	 * Test content options are registered under gcep_content group.
 	 *
 	 * @return void
 	 */
@@ -158,13 +158,13 @@ class SettingsTest extends TestCase {
 
 		$this->settings->register_settings();
 
-		$this->assertSame( 'gep_content', $registered['gep_site_name'] );
-		$this->assertSame( 'gep_content', $registered['gep_error_title'] );
-		$this->assertSame( 'gep_content', $registered['gep_copyright'] );
+		$this->assertSame( 'gcep_content', $registered['gcep_site_name'] );
+		$this->assertSame( 'gcep_content', $registered['gcep_error_title'] );
+		$this->assertSame( 'gcep_content', $registered['gcep_copyright'] );
 	}
 
 	/**
-	 * Test behavior options are registered under gep_behavior group.
+	 * Test behavior options are registered under gcep_behavior group.
 	 *
 	 * @return void
 	 */
@@ -179,9 +179,9 @@ class SettingsTest extends TestCase {
 
 		$this->settings->register_settings();
 
-		$this->assertSame( 'gep_behavior', $registered['gep_scope'] );
-		$this->assertSame( 'gep_behavior', $registered['gep_fatal_errors'] );
-		$this->assertSame( 'gep_behavior', $registered['gep_admin_bypass'] );
+		$this->assertSame( 'gcep_behavior', $registered['gcep_scope'] );
+		$this->assertSame( 'gcep_behavior', $registered['gcep_fatal_errors'] );
+		$this->assertSame( 'gcep_behavior', $registered['gcep_admin_bypass'] );
 	}
 
 	/**
@@ -190,7 +190,7 @@ class SettingsTest extends TestCase {
 	 * @return void
 	 */
 	public function test_add_settings_link_prepends(): void {
-		Functions\when( 'admin_url' )->justReturn( 'https://example.com/wp-admin/options-general.php?page=gep-settings' );
+		Functions\when( 'admin_url' )->justReturn( 'https://example.com/wp-admin/options-general.php?page=gcep-settings' );
 		Functions\when( 'esc_url' )->returnArg();
 		Functions\when( 'esc_html__' )->returnArg();
 
@@ -198,7 +198,7 @@ class SettingsTest extends TestCase {
 		$result   = $this->settings->add_settings_link( $existing );
 
 		$this->assertCount( 2, $result );
-		$this->assertStringContainsString( 'gep-settings', $result[0] );
+		$this->assertStringContainsString( 'gcep-settings', $result[0] );
 		$this->assertStringContainsString( 'Settings', $result[0] );
 	}
 
@@ -208,10 +208,10 @@ class SettingsTest extends TestCase {
 	 * @return void
 	 */
 	public function test_get_group_for_tab(): void {
-		$this->assertSame( 'gep_design', Settings::get_group_for_tab( 'design' ) );
-		$this->assertSame( 'gep_content', Settings::get_group_for_tab( 'content' ) );
-		$this->assertSame( 'gep_behavior', Settings::get_group_for_tab( 'behavior' ) );
-		$this->assertSame( 'gep_design', Settings::get_group_for_tab( 'invalid' ) );
+		$this->assertSame( 'gcep_design', Settings::get_group_for_tab( 'design' ) );
+		$this->assertSame( 'gcep_content', Settings::get_group_for_tab( 'content' ) );
+		$this->assertSame( 'gcep_behavior', Settings::get_group_for_tab( 'behavior' ) );
+		$this->assertSame( 'gcep_design', Settings::get_group_for_tab( 'invalid' ) );
 	}
 
 	/**
@@ -222,10 +222,10 @@ class SettingsTest extends TestCase {
 	public function test_get_all_option_defs_has_all_options(): void {
 		$defs = Settings::get_all_option_defs();
 
-		$this->assertArrayHasKey( 'gep_template', $defs );
-		$this->assertArrayHasKey( 'gep_site_name', $defs );
-		$this->assertArrayHasKey( 'gep_scope', $defs );
-		$this->assertArrayHasKey( 'gep_fatal_errors', $defs );
+		$this->assertArrayHasKey( 'gcep_template', $defs );
+		$this->assertArrayHasKey( 'gcep_site_name', $defs );
+		$this->assertArrayHasKey( 'gcep_scope', $defs );
+		$this->assertArrayHasKey( 'gcep_fatal_errors', $defs );
 
 		$this->assertGreaterThanOrEqual( 20, count( $defs ) );
 	}

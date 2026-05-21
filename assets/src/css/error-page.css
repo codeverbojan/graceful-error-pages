@@ -14,43 +14,44 @@
    Design Tokens
    ---------------------------------------------------------------- */
 :root {
-	--gep-brand-color: #2563eb;
-	--gep-bg-color: #f8f9fb;
-	--gep-text-color: #1c2024;
-	--gep-text-muted: #60646c;
-	--gep-border-color: #e0e1e6;
-	--gep-card-bg: #ffffff;
-	--gep-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-	--gep-radius: 12px;
-	--gep-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+	--gcep-brand-color: #2563eb;
+	--gcep-bg-color: #f8f9fb;
+	--gcep-text-color: #1c2024;
+	--gcep-text-muted: #60646c;
+	--gcep-border-color: #e0e1e6;
+	--gcep-card-bg: #fff;
+	--gcep-font-family: system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, sans-serif;
+	--gcep-radius: 12px;
+	--gcep-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 /*
  * Dark mode: auto|on|off|disabled.
  * "off" and "disabled" have no rules — they inherit light defaults from :root.
- * The dark template (.gep-template-dark) handles its own colors independently.
+ * The dark template (.gcep-template-dark) handles its own colors independently.
  */
 
 /* Dark mode — auto (follows OS preference). */
 @media (prefers-color-scheme: dark) {
-	body.gep-error-page[data-dark-mode="auto"] {
-		--gep-bg-color: #111113;
-		--gep-text-color: #eeeef0;
-		--gep-text-muted: #9b9ba7;
-		--gep-border-color: #2e2e32;
-		--gep-card-bg: #1a1a1e;
-		--gep-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.16);
+
+	body.gcep-error-page[data-dark-mode="auto"] {
+		--gcep-bg-color: #111113;
+		--gcep-text-color: #eeeef0;
+		--gcep-text-muted: #9b9ba7;
+		--gcep-border-color: #2e2e32;
+		--gcep-card-bg: #1a1a1e;
+		--gcep-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.16);
 	}
 }
 
 /* Dark mode — forced on. */
-body.gep-error-page[data-dark-mode="on"] {
-	--gep-bg-color: #111113;
-	--gep-text-color: #eeeef0;
-	--gep-text-muted: #9b9ba7;
-	--gep-border-color: #2e2e32;
-	--gep-card-bg: #1a1a1e;
-	--gep-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.16);
+body.gcep-error-page[data-dark-mode="on"] {
+	--gcep-bg-color: #111113;
+	--gcep-text-color: #eeeef0;
+	--gcep-text-muted: #9b9ba7;
+	--gcep-border-color: #2e2e32;
+	--gcep-card-bg: #1a1a1e;
+	--gcep-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 /* ----------------------------------------------------------------
@@ -72,35 +73,35 @@ html {
 /* ----------------------------------------------------------------
    Base: shared across all templates
    ---------------------------------------------------------------- */
-body.gep-error-page {
+body.gcep-error-page {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	min-height: 100vh;
 	padding: 24px;
-	font-family: var(--gep-font-family);
+	font-family: var(--gcep-font-family);
 	font-size: 16px;
 	line-height: 1.5;
-	color: var(--gep-text-color);
-	background-color: var(--gep-bg-color);
+	color: var(--gcep-text-color);
+	background-color: var(--gcep-bg-color);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.gep-card {
+.gcep-card {
 	width: 100%;
 	max-width: 440px;
 	padding: 48px 40px;
 	text-align: center;
-	background-color: var(--gep-card-bg);
-	border-radius: var(--gep-radius);
-	box-shadow: var(--gep-shadow);
+	background-color: var(--gcep-card-bg);
+	border-radius: var(--gcep-radius);
+	box-shadow: var(--gcep-shadow);
 }
 
 /* ----------------------------------------------------------------
    Logo / Icon
    ---------------------------------------------------------------- */
-.gep-logo {
+.gcep-logo {
 	display: block;
 	max-width: 160px;
 	max-height: 48px;
@@ -108,7 +109,7 @@ body.gep-error-page {
 	object-fit: contain;
 }
 
-.gep-icon {
+.gcep-icon {
 	display: block;
 	width: 40px;
 	height: 40px;
@@ -120,33 +121,33 @@ body.gep-error-page {
 /* ----------------------------------------------------------------
    Typography
    ---------------------------------------------------------------- */
-.gep-title {
+.gcep-title {
 	margin-bottom: 8px;
 	font-size: 20px;
 	font-weight: 600;
 	line-height: 1.3;
 	letter-spacing: -0.01em;
-	color: var(--gep-text-color);
+	color: var(--gcep-text-color);
 }
 
-.gep-message {
+.gcep-message {
 	margin-bottom: 32px;
 	font-size: 14px;
 	line-height: 1.6;
-	color: var(--gep-text-muted);
+	color: var(--gcep-text-muted);
 }
 
 /* ----------------------------------------------------------------
    Buttons
    ---------------------------------------------------------------- */
-.gep-actions {
+.gcep-actions {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
 	justify-content: center;
 }
 
-.gep-btn {
+.gcep-btn {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -163,90 +164,90 @@ body.gep-error-page {
 	transition: background-color 0.12s ease, border-color 0.12s ease;
 }
 
-.gep-btn:focus {
-	outline: 2px solid var(--gep-brand-color);
+.gcep-btn:focus {
+	outline: 2px solid var(--gcep-brand-color);
 	outline-offset: 2px;
 }
 
-.gep-btn:focus:not(:focus-visible) {
+.gcep-btn:focus:not(:focus-visible) {
 	outline: none;
 }
 
-.gep-btn-primary {
-	color: #ffffff;
-	background-color: var(--gep-brand-color);
-	border-color: var(--gep-brand-color);
+.gcep-btn-primary {
+	color: #fff;
+	background-color: var(--gcep-brand-color);
+	border-color: var(--gcep-brand-color);
 }
 
-.gep-btn-primary:hover {
+.gcep-btn-primary:hover {
 	filter: brightness(0.92);
 }
 
-.gep-btn-secondary {
-	color: var(--gep-text-color);
+.gcep-btn-secondary {
+	color: var(--gcep-text-color);
 	background-color: transparent;
-	border-color: var(--gep-border-color);
+	border-color: var(--gcep-border-color);
 }
 
-.gep-btn-secondary:hover {
-	background-color: var(--gep-border-color);
+.gcep-btn-secondary:hover {
+	background-color: var(--gcep-border-color);
 }
 
 /* ----------------------------------------------------------------
    Support Link
    ---------------------------------------------------------------- */
-.gep-support {
+.gcep-support {
 	margin-top: 24px;
 	font-size: 13px;
 }
 
-.gep-support a {
-	color: var(--gep-brand-color);
+.gcep-support a {
+	color: var(--gcep-brand-color);
 	text-decoration: none;
 }
 
-.gep-support a:hover {
+.gcep-support a:hover {
 	text-decoration: underline;
 }
 
-.gep-support a:focus {
-	outline: 2px solid var(--gep-brand-color);
+.gcep-support a:focus {
+	outline: 2px solid var(--gcep-brand-color);
 	outline-offset: 2px;
 }
 
-.gep-support a:focus:not(:focus-visible) {
+.gcep-support a:focus:not(:focus-visible) {
 	outline: none;
 }
 
 /* ----------------------------------------------------------------
    Footer
    ---------------------------------------------------------------- */
-.gep-footer {
+.gcep-footer {
 	margin-top: 32px;
 	font-size: 13px;
-	color: var(--gep-text-muted);
+	color: var(--gcep-text-muted);
 }
 
 /* ----------------------------------------------------------------
    Template: Dark
-   Always-dark. Its own color world — the gep-template-dark class
+   Always-dark. Its own color world — the gcep-template-dark class
    overrides tokens regardless of the data-dark-mode attribute.
    ---------------------------------------------------------------- */
-body.gep-template-dark {
-	--gep-bg-color: #0c0c0e;
-	--gep-text-color: #ededef;
-	--gep-text-muted: #8b8b97;
-	--gep-border-color: #27272b;
-	--gep-card-bg: #18181b;
-	--gep-shadow: none;
+body.gcep-template-dark {
+	--gcep-bg-color: #0c0c0e;
+	--gcep-text-color: #ededef;
+	--gcep-text-muted: #8b8b97;
+	--gcep-border-color: #27272b;
+	--gcep-card-bg: #18181b;
+	--gcep-shadow: none;
 }
 
-body.gep-template-dark .gep-card {
-	border: 1px solid var(--gep-border-color);
+body.gcep-template-dark .gcep-card {
+	border: 1px solid var(--gcep-border-color);
 }
 
-body.gep-template-dark .gep-btn-secondary {
-	color: var(--gep-text-muted);
+body.gcep-template-dark .gcep-btn-secondary {
+	color: var(--gcep-text-muted);
 }
 
 /* ----------------------------------------------------------------
@@ -254,47 +255,47 @@ body.gep-template-dark .gep-btn-secondary {
    Logo-forward, structured, professional. Wider card,
    explicit visual hierarchy, separated footer.
    ---------------------------------------------------------------- */
-body.gep-template-corporate .gep-card {
+body.gcep-template-corporate .gcep-card {
 	max-width: 520px;
 	padding: 48px;
 	text-align: start;
-	border-top: 3px solid var(--gep-brand-color);
+	border-top: 3px solid var(--gcep-brand-color);
 }
 
-body.gep-template-corporate .gep-logo {
+body.gcep-template-corporate .gcep-logo {
 	max-width: 140px;
 	max-height: 40px;
 	margin-inline: 0;
 	margin-block: 0 40px;
 }
 
-body.gep-template-corporate .gep-icon {
+body.gcep-template-corporate .gcep-icon {
 	margin-inline: 0;
 	margin-block: 0 40px;
 }
 
-.gep-logo-text {
+.gcep-logo-text {
 	margin-bottom: 40px;
 	font-size: 16px;
 	font-weight: 600;
 	letter-spacing: -0.02em;
-	color: var(--gep-text-color);
+	color: var(--gcep-text-color);
 }
 
-body.gep-template-corporate .gep-title {
+body.gcep-template-corporate .gcep-title {
 	font-size: 24px;
 	font-weight: 600;
 	letter-spacing: -0.02em;
 }
 
-body.gep-template-corporate .gep-actions {
+body.gcep-template-corporate .gcep-actions {
 	justify-content: start;
 }
 
-body.gep-template-corporate .gep-footer {
+body.gcep-template-corporate .gcep-footer {
 	margin-top: 40px;
 	padding-top: 24px;
-	border-top: 1px solid var(--gep-border-color);
+	border-top: 1px solid var(--gcep-border-color);
 	font-size: 12px;
 }
 
@@ -303,52 +304,53 @@ body.gep-template-corporate .gep-footer {
    Warm, soft, encouraging. Generous whitespace,
    pill-shaped buttons, illustration-forward.
    ---------------------------------------------------------------- */
-body.gep-template-friendly {
-	--gep-radius: 20px;
-	--gep-bg-color: #faf8f5;
+body.gcep-template-friendly {
+	--gcep-radius: 20px;
+	--gcep-bg-color: #faf8f5;
 }
 
 @media (prefers-color-scheme: dark) {
-	body.gep-template-friendly[data-dark-mode="auto"] {
-		--gep-bg-color: #141210;
+
+	body.gcep-template-friendly[data-dark-mode="auto"] {
+		--gcep-bg-color: #141210;
 	}
 }
 
-body.gep-template-friendly[data-dark-mode="on"] {
-	--gep-bg-color: #141210;
+body.gcep-template-friendly[data-dark-mode="on"] {
+	--gcep-bg-color: #141210;
 }
 
-body.gep-template-friendly .gep-card {
+body.gcep-template-friendly .gcep-card {
 	max-width: 480px;
 	padding: 56px 40px 48px;
 }
 
-body.gep-template-friendly .gep-illustration {
+body.gcep-template-friendly .gcep-illustration {
 	display: block;
 	width: 72px;
 	height: 72px;
 	margin: 0 auto 24px;
 }
 
-body.gep-template-friendly .gep-title {
+body.gcep-template-friendly .gcep-title {
 	font-size: 24px;
 	font-weight: 600;
 	letter-spacing: -0.015em;
 }
 
-body.gep-template-friendly .gep-message {
+body.gcep-template-friendly .gcep-message {
 	font-size: 15px;
 	line-height: 1.65;
 }
 
-body.gep-template-friendly .gep-btn {
+body.gcep-template-friendly .gcep-btn {
 	height: 40px;
 	padding: 0 24px;
 	font-size: 14px;
 	border-radius: 999px;
 }
 
-body.gep-template-friendly .gep-footer {
+body.gcep-template-friendly .gcep-footer {
 	margin-top: 40px;
 }
 
@@ -357,11 +359,11 @@ body.gep-template-friendly .gep-footer {
    Bare minimum. No card, no decoration. Just readable
    centered text with enough spacing to not look broken.
    ---------------------------------------------------------------- */
-body.gep-template-starter {
+body.gcep-template-starter {
 	padding: 32px 24px;
 }
 
-body.gep-template-starter .gep-card {
+body.gcep-template-starter .gcep-card {
 	max-width: 480px;
 	padding: 0;
 	background-color: transparent;
@@ -369,37 +371,37 @@ body.gep-template-starter .gep-card {
 	box-shadow: none;
 }
 
-body.gep-template-starter .gep-logo {
+body.gcep-template-starter .gcep-logo {
 	max-width: 120px;
 	max-height: 36px;
 	margin-bottom: 24px;
 }
 
-body.gep-template-starter .gep-icon {
+body.gcep-template-starter .gcep-icon {
 	width: 32px;
 	height: 32px;
 	margin-bottom: 24px;
 }
 
-body.gep-template-starter .gep-title {
+body.gcep-template-starter .gcep-title {
 	margin-bottom: 4px;
 	font-size: 16px;
 	font-weight: 600;
 }
 
-body.gep-template-starter .gep-message {
+body.gcep-template-starter .gcep-message {
 	margin-bottom: 24px;
 	font-size: 14px;
 }
 
-body.gep-template-starter .gep-btn {
+body.gcep-template-starter .gcep-btn {
 	height: 32px;
 	padding: 0 12px;
 	font-size: 13px;
 	border-radius: 6px;
 }
 
-body.gep-template-starter .gep-footer {
+body.gcep-template-starter .gcep-footer {
 	margin-top: 24px;
 	font-size: 12px;
 }
@@ -408,31 +410,32 @@ body.gep-template-starter .gep-footer {
    Responsive: 480px and below
    ---------------------------------------------------------------- */
 @media (max-width: 480px) {
-	body.gep-error-page {
+
+	body.gcep-error-page {
 		padding: 16px;
 	}
 
-	.gep-card {
+	.gcep-card {
 		padding: 32px 24px;
 	}
 
-	body.gep-template-corporate .gep-card {
+	body.gcep-template-corporate .gcep-card {
 		padding: 32px 24px;
 	}
 
-	body.gep-template-corporate .gep-title {
+	body.gcep-template-corporate .gcep-title {
 		font-size: 20px;
 	}
 
-	body.gep-template-friendly .gep-card {
+	body.gcep-template-friendly .gcep-card {
 		padding: 40px 24px 32px;
 	}
 
-	.gep-actions {
+	.gcep-actions {
 		flex-direction: column;
 	}
 
-	.gep-btn {
+	.gcep-btn {
 		width: 100%;
 	}
 }
@@ -441,19 +444,20 @@ body.gep-template-starter .gep-footer {
    Responsive: 320px — smallest supported viewport
    ---------------------------------------------------------------- */
 @media (max-width: 320px) {
-	body.gep-error-page {
+
+	body.gcep-error-page {
 		padding: 12px;
 	}
 
-	.gep-card {
+	.gcep-card {
 		padding: 24px 16px;
 	}
 
-	.gep-title {
+	.gcep-title {
 		font-size: 18px;
 	}
 
-	.gep-message {
+	.gcep-message {
 		font-size: 13px;
 	}
 }

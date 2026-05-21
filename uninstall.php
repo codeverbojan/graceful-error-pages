@@ -14,29 +14,29 @@ if ( ! defined( 'ABSPATH' ) || ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Delete all plugin options.
-$gep_options = [
-	'gep_template',
-	'gep_logo_url',
-	'gep_icon_url',
-	'gep_brand_color',
-	'gep_bg_color',
-	'gep_text_color',
-	'gep_dark_mode',
-	'gep_error_title',
-	'gep_error_message',
-	'gep_primary_btn_text',
-	'gep_primary_btn_url',
-	'gep_secondary_btn_text',
-	'gep_secondary_btn_url',
-	'gep_support_link',
-	'gep_copyright',
-	'gep_scope',
-	'gep_fatal_errors',
-	'gep_show_debug',
-	'gep_admin_bypass',
-	'gep_site_name',
+$gcep_options = [
+	'gcep_template',
+	'gcep_logo_url',
+	'gcep_icon_url',
+	'gcep_brand_color',
+	'gcep_bg_color',
+	'gcep_text_color',
+	'gcep_dark_mode',
+	'gcep_error_title',
+	'gcep_error_message',
+	'gcep_primary_btn_text',
+	'gcep_primary_btn_url',
+	'gcep_secondary_btn_text',
+	'gcep_secondary_btn_url',
+	'gcep_support_link',
+	'gcep_copyright',
+	'gcep_scope',
+	'gcep_fatal_errors',
+	'gcep_show_debug',
+	'gcep_admin_bypass',
+	'gcep_site_name',
 ];
 
-foreach ( $gep_options as $gep_option ) {
-	delete_option( $gep_option );
+foreach ( $gcep_options as $gcep_option ) {
+	delete_option( $gcep_option );
 }

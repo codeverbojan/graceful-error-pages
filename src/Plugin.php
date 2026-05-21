@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Boots the plugin via a static factory method. Not a singleton — returns a new
  * instance on first boot. Subsequent calls return the same instance (boot guard).
- * The instance is stored in $GLOBALS['gep_plugin'] by the main plugin file.
+ * The instance is stored in $GLOBALS['gcep_plugin'] by the main plugin file.
  */
 class Plugin {
 
@@ -67,8 +67,10 @@ class Plugin {
 	 * @return void
 	 */
 	private function register_hooks(): void {
-		register_activation_hook( GEP_FILE, [ $this, 'activate' ] );
-		register_deactivation_hook( GEP_FILE, [ $this, 'deactivate' ] );
+		register_activation_hook( GCEP_FILE, [ $this, 'activate' ] );
+		register_deactivation_hook( GCEP_FILE, [ $this, 'deactivate' ] );
+
+		add_action( 'init', [ $this, 'load_textdomain' ] );
 
 		$template_engine = new TemplateEngine();
 
@@ -85,6 +87,15 @@ class Plugin {
 	}
 
 	/**
+	 * Load plugin text domain for translations.
+	 *
+	 * @return void
+	 */
+	public function load_textdomain(): void {
+		load_plugin_textdomain( 'graceful-error-pages', false, dirname( plugin_basename( GCEP_FILE ) ) . '/languages' );
+	}
+
+	/**
 	 * Plugin activation callback.
 	 *
 	 * @return void
@@ -92,16 +103,16 @@ class Plugin {
 	public function activate(): void {
 		$detected = AutoDetect::detect();
 
-		add_option( 'gep_site_name', $detected['site_name'] );
-		add_option( 'gep_logo_url', $detected['logo_url'] );
-		add_option( 'gep_icon_url', $detected['icon_url'] );
-		add_option( 'gep_brand_color', $detected['brand_color'] );
-		add_option( 'gep_template', 'minimal' );
-		add_option( 'gep_scope', 'frontend' );
-		add_option( 'gep_dark_mode', 'auto' );
-		add_option( 'gep_fatal_errors', 1 );
-		add_option( 'gep_show_debug', 1 );
-		add_option( 'gep_admin_bypass', 1 );
+		add_option( 'gcep_site_name', $detected['site_name'] );
+		add_option( 'gcep_logo_url', $detected['logo_url'] );
+		add_option( 'gcep_icon_url', $detected['icon_url'] );
+		add_option( 'gcep_brand_color', $detected['brand_color'] );
+		add_option( 'gcep_template', 'minimal' );
+		add_option( 'gcep_scope', 'frontend' );
+		add_option( 'gcep_dark_mode', 'auto' );
+		add_option( 'gcep_fatal_errors', 1 );
+		add_option( 'gcep_show_debug', 1 );
+		add_option( 'gcep_admin_bypass', 1 );
 	}
 
 	/**

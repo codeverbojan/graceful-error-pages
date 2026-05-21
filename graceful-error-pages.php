@@ -29,17 +29,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! defined( 'GEP_VERSION' ) ) {
-	define( 'GEP_VERSION', '1.0.0' );
+if ( ! defined( 'GCEP_VERSION' ) ) {
+	define( 'GCEP_VERSION', '1.0.0' );
 }
-if ( ! defined( 'GEP_FILE' ) ) {
-	define( 'GEP_FILE', __FILE__ );
+if ( ! defined( 'GCEP_FILE' ) ) {
+	define( 'GCEP_FILE', __FILE__ );
 }
-if ( ! defined( 'GEP_DIR' ) ) {
-	define( 'GEP_DIR', plugin_dir_path( __FILE__ ) );
+if ( ! defined( 'GCEP_DIR' ) ) {
+	define( 'GCEP_DIR', plugin_dir_path( __FILE__ ) );
 }
-if ( ! defined( 'GEP_URL' ) ) {
-	define( 'GEP_URL', plugin_dir_url( __FILE__ ) );
+if ( ! defined( 'GCEP_URL' ) ) {
+	define( 'GCEP_URL', plugin_dir_url( __FILE__ ) );
 }
 
 /**
@@ -69,7 +69,7 @@ spl_autoload_register(
 			return;
 		}
 
-		$file = GEP_DIR . 'src/' . str_replace( '\\', '/', $relative ) . '.php';
+		$file = GCEP_DIR . 'src/' . str_replace( '\\', '/', $relative ) . '.php';
 
 		if ( file_exists( $file ) ) {
 			require $file;
@@ -77,4 +77,4 @@ spl_autoload_register(
 	}
 );
 
-$GLOBALS['gep_plugin'] = GracefulErrorPages\Plugin::boot();
+$GLOBALS['gcep_plugin'] = GracefulErrorPages\Plugin::boot();

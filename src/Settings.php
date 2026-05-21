@@ -9,6 +9,8 @@ declare( strict_types=1 );
 
 namespace GracefulErrorPages;
 
+use GracefulErrorPages\Helpers\Assets;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -27,7 +29,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	public const PAGE_SLUG = 'gep-settings';
+	public const PAGE_SLUG = 'gcep-settings';
 
 	/**
 	 * Capability required to manage settings.
@@ -49,9 +51,9 @@ class Settings {
 	 * @var array<string, string>
 	 */
 	private const TAB_GROUPS = [
-		'design'   => 'gep_design',
-		'content'  => 'gep_content',
-		'behavior' => 'gep_behavior',
+		'design'   => 'gcep_design',
+		'content'  => 'gcep_content',
+		'behavior' => 'gcep_behavior',
 	];
 
 	/**
@@ -63,106 +65,106 @@ class Settings {
 	 */
 	private const TAB_OPTIONS = [
 		'design'   => [
-			'gep_template'    => [
+			'gcep_template'    => [
 				'type'     => 'string',
 				'sanitize' => 'template',
 				'default'  => 'minimal',
 			],
-			'gep_logo_url'    => [
+			'gcep_logo_url'    => [
 				'type'     => 'string',
 				'sanitize' => 'url',
 				'default'  => '',
 			],
-			'gep_icon_url'    => [
+			'gcep_icon_url'    => [
 				'type'     => 'string',
 				'sanitize' => 'url',
 				'default'  => '',
 			],
-			'gep_brand_color' => [
+			'gcep_brand_color' => [
 				'type'     => 'string',
 				'sanitize' => 'hex_color',
 				'default'  => '#2563eb',
 			],
-			'gep_bg_color'    => [
+			'gcep_bg_color'    => [
 				'type'     => 'string',
 				'sanitize' => 'hex_color',
 				'default'  => '',
 			],
-			'gep_text_color'  => [
+			'gcep_text_color'  => [
 				'type'     => 'string',
 				'sanitize' => 'hex_color',
 				'default'  => '',
 			],
-			'gep_dark_mode'   => [
+			'gcep_dark_mode'   => [
 				'type'     => 'string',
 				'sanitize' => 'dark_mode',
 				'default'  => 'auto',
 			],
 		],
 		'content'  => [
-			'gep_site_name'          => [
+			'gcep_site_name'          => [
 				'type'     => 'string',
 				'sanitize' => 'text',
 				'default'  => '',
 			],
-			'gep_error_title'        => [
+			'gcep_error_title'        => [
 				'type'     => 'string',
 				'sanitize' => 'text',
 				'default'  => '',
 			],
-			'gep_error_message'      => [
+			'gcep_error_message'      => [
 				'type'     => 'string',
 				'sanitize' => 'kses',
 				'default'  => '',
 			],
-			'gep_primary_btn_text'   => [
+			'gcep_primary_btn_text'   => [
 				'type'     => 'string',
 				'sanitize' => 'text',
 				'default'  => '',
 			],
-			'gep_primary_btn_url'    => [
+			'gcep_primary_btn_url'    => [
 				'type'     => 'string',
 				'sanitize' => 'url',
 				'default'  => '',
 			],
-			'gep_secondary_btn_text' => [
+			'gcep_secondary_btn_text' => [
 				'type'     => 'string',
 				'sanitize' => 'text',
 				'default'  => '',
 			],
-			'gep_secondary_btn_url'  => [
+			'gcep_secondary_btn_url'  => [
 				'type'     => 'string',
 				'sanitize' => 'url',
 				'default'  => '',
 			],
-			'gep_support_link'       => [
+			'gcep_support_link'       => [
 				'type'     => 'string',
 				'sanitize' => 'url',
 				'default'  => '',
 			],
-			'gep_copyright'          => [
+			'gcep_copyright'          => [
 				'type'     => 'string',
 				'sanitize' => 'text',
 				'default'  => '',
 			],
 		],
 		'behavior' => [
-			'gep_scope'        => [
+			'gcep_scope'        => [
 				'type'     => 'string',
 				'sanitize' => 'scope',
 				'default'  => 'frontend',
 			],
-			'gep_fatal_errors' => [
+			'gcep_fatal_errors' => [
 				'type'     => 'integer',
 				'sanitize' => 'boolean',
 				'default'  => 1,
 			],
-			'gep_show_debug'   => [
+			'gcep_show_debug'   => [
 				'type'     => 'integer',
 				'sanitize' => 'boolean',
 				'default'  => 1,
 			],
-			'gep_admin_bypass' => [
+			'gcep_admin_bypass' => [
 				'type'     => 'integer',
 				'sanitize' => 'boolean',
 				'default'  => 1,
@@ -185,7 +187,7 @@ class Settings {
 	public function register(): void {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
-		add_filter( 'plugin_action_links_' . plugin_basename( GEP_FILE ), [ $this, 'add_settings_link' ] );
+		add_filter( 'plugin_action_links_' . plugin_basename( GCEP_FILE ), [ $this, 'add_settings_link' ] );
 	}
 
 	/**
@@ -262,24 +264,13 @@ class Settings {
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_media();
 
-		wp_enqueue_style(
-			'gep-admin',
-			GEP_URL . 'assets/css/admin.css',
-			[],
-			GEP_VERSION
-		);
+		Assets::enqueue_style( 'admin', 'css/admin.css' );
 
-		wp_enqueue_script(
-			'gep-admin',
-			GEP_URL . 'assets/js/admin.js',
-			[ 'jquery', 'wp-color-picker' ],
-			GEP_VERSION,
-			true
-		);
+		Assets::enqueue_script( 'admin', [ 'wp-color-picker' ] );
 
 		wp_localize_script(
-			'gep-admin',
-			'gepAdmin',
+			'gcep-admin',
+			'gcepAdmin',
 			[
 				'previewNonce'  => wp_create_nonce( Preview::NONCE_ACTION ),
 				'previewAction' => Preview::ACTION,
@@ -291,13 +282,7 @@ class Settings {
 			]
 		);
 
-		wp_enqueue_script(
-			'gep-merge-tags',
-			GEP_URL . 'assets/js/merge-tags.js',
-			[ 'jquery' ],
-			GEP_VERSION,
-			true
-		);
+		Assets::enqueue_script( 'merge-tags' );
 
 		$tag_defs = [];
 		foreach ( TemplateEngine::MERGE_TAGS as $tag => $key ) {
@@ -307,7 +292,7 @@ class Settings {
 			];
 		}
 
-		wp_localize_script( 'gep-merge-tags', 'gepMergeTags', $tag_defs );
+		wp_localize_script( 'gcep-merge-tags', 'gcepMergeTags', $tag_defs );
 	}
 
 	/**
@@ -325,12 +310,12 @@ class Settings {
 		echo '<div class="wrap">';
 		echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
 
-		echo '<div class="gep-header-bar">';
+		echo '<div class="gcep-header-bar">';
 		$this->render_tabs( $active_tab );
-		echo '<button type="button" class="button gep-preview-btn">' . esc_html__( 'Preview Error Page', 'graceful-error-pages' ) . '</button>';
+		echo '<button type="button" class="button gcep-preview-btn">' . esc_html__( 'Preview Error Page', 'graceful-error-pages' ) . '</button>';
 		echo '</div>';
 
-		echo '<form method="post" action="options.php" id="gep-settings-form">';
+		echo '<form method="post" action="options.php" id="gcep-settings-form">';
 		settings_fields( self::TAB_GROUPS[ $active_tab ] );
 
 		switch ( $active_tab ) {
@@ -427,7 +412,7 @@ class Settings {
 	 * @return void
 	 */
 	private function render_design_tab(): void {
-		$current_template = get_option( 'gep_template', 'minimal' );
+		$current_template = get_option( 'gcep_template', 'minimal' );
 		$templates        = TemplateEngine::get_available_templates();
 
 		echo '<table class="form-table" role="presentation">';
@@ -438,16 +423,16 @@ class Settings {
 		echo '<td>';
 		echo '<fieldset>';
 		echo '<legend class="screen-reader-text"><span>' . esc_html__( 'Template', 'graceful-error-pages' ) . '</span></legend>';
-		echo '<div class="gep-template-picker">';
+		echo '<div class="gcep-template-picker">';
 
 		foreach ( $templates as $slug => $label ) {
 			$checked = checked( $current_template, $slug, false );
-			$id      = 'gep-template-' . esc_attr( $slug );
+			$id      = 'gcep-template-' . esc_attr( $slug );
 
-			echo '<label class="gep-template-option" for="' . esc_attr( $id ) . '">';
-			echo '<input type="radio" id="' . esc_attr( $id ) . '" name="gep_template" value="' . esc_attr( $slug ) . '"' . $checked . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() returns escaped HTML attribute.
-			echo '<span class="gep-template-preview gep-template-preview--' . esc_attr( $slug ) . '"></span>';
-			echo '<span class="gep-template-label">' . esc_html( $label ) . '</span>';
+			echo '<label class="gcep-template-option" for="' . esc_attr( $id ) . '">';
+			echo '<input type="radio" id="' . esc_attr( $id ) . '" name="gcep_template" value="' . esc_attr( $slug ) . '"' . $checked . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() returns escaped HTML attribute.
+			echo '<span class="gcep-template-preview gcep-template-preview--' . esc_attr( $slug ) . '"></span>';
+			echo '<span class="gcep-template-label">' . esc_html( $label ) . '</span>';
 			echo '</label>';
 		}
 
@@ -458,38 +443,38 @@ class Settings {
 
 		// Logo URL.
 		$this->render_media_field(
-			'gep_logo_url',
+			'gcep_logo_url',
 			__( 'Logo URL', 'graceful-error-pages' ),
 			__( 'Logo displayed on the error page. Leave blank to use the site icon.', 'graceful-error-pages' )
 		);
 
 		// Site Icon URL.
 		$this->render_media_field(
-			'gep_icon_url',
+			'gcep_icon_url',
 			__( 'Site Icon URL', 'graceful-error-pages' ),
 			__( 'Fallback icon when no logo is set. Auto-detected on activation.', 'graceful-error-pages' )
 		);
 
 		// Brand color.
 		$this->render_color_field(
-			'gep_brand_color',
+			'gcep_brand_color',
 			__( 'Brand Color', 'graceful-error-pages' )
 		);
 
 		// Background color.
 		$this->render_color_field(
-			'gep_bg_color',
+			'gcep_bg_color',
 			__( 'Background Color', 'graceful-error-pages' )
 		);
 
 		// Text color.
 		$this->render_color_field(
-			'gep_text_color',
+			'gcep_text_color',
 			__( 'Text Color', 'graceful-error-pages' )
 		);
 
 		// Dark mode.
-		$dark_mode = get_option( 'gep_dark_mode', 'auto' );
+		$dark_mode = get_option( 'gcep_dark_mode', 'auto' );
 		$modes     = [
 			'auto'     => __( 'Auto (follow system preference)', 'graceful-error-pages' ),
 			'on'       => __( 'Always dark', 'graceful-error-pages' ),
@@ -498,9 +483,9 @@ class Settings {
 		];
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-dark-mode">' . esc_html__( 'Dark Mode', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-dark-mode">' . esc_html__( 'Dark Mode', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<select id="gep-dark-mode" name="gep_dark_mode">';
+		echo '<select id="gcep-dark-mode" name="gcep_dark_mode">';
 
 		foreach ( $modes as $mode_value => $mode_label ) {
 			echo '<option value="' . esc_attr( $mode_value ) . '"' . selected( $dark_mode, $mode_value, false ) . '>';
@@ -524,45 +509,45 @@ class Settings {
 		echo '<table class="form-table" role="presentation">';
 
 		// Site name override.
-		$site_name = get_option( 'gep_site_name', '' );
+		$site_name = get_option( 'gcep_site_name', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-site-name">' . esc_html__( 'Site Name', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-site-name">' . esc_html__( 'Site Name', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="text" id="gep-site-name" name="gep_site_name" value="' . esc_attr( $site_name ) . '" class="regular-text">';
+		echo '<input type="text" id="gcep-site-name" name="gcep_site_name" value="' . esc_attr( $site_name ) . '" class="regular-text">';
 		echo '<p class="description">' . esc_html__( 'Override the site name shown on error pages. Leave blank to use Settings > General.', 'graceful-error-pages' ) . '</p>';
 		echo '</td>';
 		echo '</tr>';
 
 		// Error title.
-		$error_title = get_option( 'gep_error_title', '' );
+		$error_title = get_option( 'gcep_error_title', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-error-title">' . esc_html__( 'Error Title', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-error-title">' . esc_html__( 'Error Title', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="text" id="gep-error-title" name="gep_error_title" value="' . esc_attr( $error_title ) . '" class="regular-text gep-merge-input">';
+		echo '<input type="text" id="gcep-error-title" name="gcep_error_title" value="' . esc_attr( $error_title ) . '" class="regular-text gcep-merge-input">';
 		echo '<p class="description">' . esc_html__( 'Leave blank to use the default or auto-detected title. Type { to insert a merge tag.', 'graceful-error-pages' ) . '</p>';
 		echo '</td>';
 		echo '</tr>';
 
 		// Error message.
-		$error_message = get_option( 'gep_error_message', '' );
+		$error_message = get_option( 'gcep_error_message', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-error-message">' . esc_html__( 'Error Message', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-error-message">' . esc_html__( 'Error Message', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<textarea id="gep-error-message" name="gep_error_message" rows="4" class="large-text gep-merge-input">' . esc_textarea( $error_message ) . '</textarea>';
+		echo '<textarea id="gcep-error-message" name="gcep_error_message" rows="4" class="large-text gcep-merge-input">' . esc_textarea( $error_message ) . '</textarea>';
 		echo '<p class="description">' . esc_html__( 'Leave blank to use the default message. Basic HTML allowed.', 'graceful-error-pages' ) . '</p>';
 		echo '</td>';
 		echo '</tr>';
 
 		// Primary button text.
-		$primary_text = get_option( 'gep_primary_btn_text', '' );
+		$primary_text = get_option( 'gcep_primary_btn_text', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-primary-btn-text">' . esc_html__( 'Primary Button Text', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-primary-btn-text">' . esc_html__( 'Primary Button Text', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="text" id="gep-primary-btn-text" name="gep_primary_btn_text" value="' . esc_attr( $primary_text ) . '" class="regular-text gep-merge-input">';
+		echo '<input type="text" id="gcep-primary-btn-text" name="gcep_primary_btn_text" value="' . esc_attr( $primary_text ) . '" class="regular-text gcep-merge-input">';
 		echo '<p class="description">';
 		/* translators: %s: default button text */
 		echo esc_html( sprintf( __( 'Default: "%s"', 'graceful-error-pages' ), __( 'Go to Homepage', 'graceful-error-pages' ) ) );
@@ -571,23 +556,23 @@ class Settings {
 		echo '</tr>';
 
 		// Primary button URL.
-		$primary_url = get_option( 'gep_primary_btn_url', '' );
+		$primary_url = get_option( 'gcep_primary_btn_url', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-primary-btn-url">' . esc_html__( 'Primary Button URL', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-primary-btn-url">' . esc_html__( 'Primary Button URL', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="url" id="gep-primary-btn-url" name="gep_primary_btn_url" value="' . esc_url( $primary_url ) . '" class="regular-text">';
+		echo '<input type="url" id="gcep-primary-btn-url" name="gcep_primary_btn_url" value="' . esc_url( $primary_url ) . '" class="regular-text">';
 		echo '<p class="description">' . esc_html__( 'Default: homepage URL.', 'graceful-error-pages' ) . '</p>';
 		echo '</td>';
 		echo '</tr>';
 
 		// Secondary button text.
-		$secondary_text = get_option( 'gep_secondary_btn_text', '' );
+		$secondary_text = get_option( 'gcep_secondary_btn_text', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-secondary-btn-text">' . esc_html__( 'Secondary Button Text', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-secondary-btn-text">' . esc_html__( 'Secondary Button Text', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="text" id="gep-secondary-btn-text" name="gep_secondary_btn_text" value="' . esc_attr( $secondary_text ) . '" class="regular-text gep-merge-input">';
+		echo '<input type="text" id="gcep-secondary-btn-text" name="gcep_secondary_btn_text" value="' . esc_attr( $secondary_text ) . '" class="regular-text gcep-merge-input">';
 		echo '<p class="description">';
 		/* translators: %s: default button text */
 		echo esc_html( sprintf( __( 'Default: "%s"', 'graceful-error-pages' ), __( 'Go Back', 'graceful-error-pages' ) ) );
@@ -596,34 +581,34 @@ class Settings {
 		echo '</tr>';
 
 		// Secondary button URL.
-		$secondary_url = get_option( 'gep_secondary_btn_url', '' );
+		$secondary_url = get_option( 'gcep_secondary_btn_url', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-secondary-btn-url">' . esc_html__( 'Secondary Button URL', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-secondary-btn-url">' . esc_html__( 'Secondary Button URL', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="url" id="gep-secondary-btn-url" name="gep_secondary_btn_url" value="' . esc_url( $secondary_url ) . '" class="regular-text">';
+		echo '<input type="url" id="gcep-secondary-btn-url" name="gcep_secondary_btn_url" value="' . esc_url( $secondary_url ) . '" class="regular-text">';
 		echo '<p class="description">' . esc_html__( 'Leave blank to use browser back.', 'graceful-error-pages' ) . '</p>';
 		echo '</td>';
 		echo '</tr>';
 
 		// Support link.
-		$support_link = get_option( 'gep_support_link', '' );
+		$support_link = get_option( 'gcep_support_link', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-support-link">' . esc_html__( 'Support Link', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-support-link">' . esc_html__( 'Support Link', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="url" id="gep-support-link" name="gep_support_link" value="' . esc_url( $support_link ) . '" class="regular-text">';
+		echo '<input type="url" id="gcep-support-link" name="gcep_support_link" value="' . esc_url( $support_link ) . '" class="regular-text">';
 		echo '<p class="description">' . esc_html__( 'Optional link to a support or contact page.', 'graceful-error-pages' ) . '</p>';
 		echo '</td>';
 		echo '</tr>';
 
 		// Copyright text.
-		$copyright = get_option( 'gep_copyright', '' );
+		$copyright = get_option( 'gcep_copyright', '' );
 
 		echo '<tr>';
-		echo '<th scope="row"><label for="gep-copyright">' . esc_html__( 'Copyright Text', 'graceful-error-pages' ) . '</label></th>';
+		echo '<th scope="row"><label for="gcep-copyright">' . esc_html__( 'Copyright Text', 'graceful-error-pages' ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="text" id="gep-copyright" name="gep_copyright" value="' . esc_attr( $copyright ) . '" class="regular-text gep-merge-input">';
+		echo '<input type="text" id="gcep-copyright" name="gcep_copyright" value="' . esc_attr( $copyright ) . '" class="regular-text gcep-merge-input">';
 		echo '<p class="description">';
 		/* translators: %s: example merge tag usage */
 		echo esc_html( sprintf( __( 'Default: "&copy; %s". Type { to insert a merge tag.', 'graceful-error-pages' ), '{year} {site_name}' ) );
@@ -643,7 +628,7 @@ class Settings {
 		echo '<table class="form-table" role="presentation">';
 
 		// Scope.
-		$scope  = get_option( 'gep_scope', 'frontend' );
+		$scope  = get_option( 'gcep_scope', 'frontend' );
 		$scopes = [
 			'frontend'   => __( 'Frontend only', 'graceful-error-pages' ),
 			'admin'      => __( 'Admin only', 'graceful-error-pages' ),
@@ -658,7 +643,7 @@ class Settings {
 
 		foreach ( $scopes as $scope_value => $scope_label ) {
 			echo '<label>';
-			echo '<input type="radio" name="gep_scope" value="' . esc_attr( $scope_value ) . '"' . checked( $scope, $scope_value, false ) . '> '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() returns escaped HTML attribute.
+			echo '<input type="radio" name="gcep_scope" value="' . esc_attr( $scope_value ) . '"' . checked( $scope, $scope_value, false ) . '> '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() returns escaped HTML attribute.
 			echo esc_html( $scope_label );
 			echo '</label><br>';
 		}
@@ -670,21 +655,21 @@ class Settings {
 
 		// Fatal errors toggle.
 		$this->render_checkbox_field(
-			'gep_fatal_errors',
+			'gcep_fatal_errors',
 			__( 'Fatal Error Handler', 'graceful-error-pages' ),
 			__( 'Replace PHP fatal error screens with branded pages', 'graceful-error-pages' )
 		);
 
 		// Debug info toggle.
 		$this->render_checkbox_field(
-			'gep_show_debug',
+			'gcep_show_debug',
 			__( 'Debug Info', 'graceful-error-pages' ),
 			__( 'Show debug details on error pages when WP_DEBUG is enabled', 'graceful-error-pages' )
 		);
 
 		// Admin bypass toggle.
 		$this->render_checkbox_field(
-			'gep_admin_bypass',
+			'gcep_admin_bypass',
 			__( 'Admin Bypass', 'graceful-error-pages' ),
 			__( 'Show default WordPress error pages to logged-in administrators', 'graceful-error-pages' )
 		);
@@ -707,18 +692,18 @@ class Settings {
 		echo '<tr>';
 		echo '<th scope="row"><label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label></th>';
 		echo '<td>';
-		echo '<div class="gep-media-field">';
+		echo '<div class="gcep-media-field">';
 		echo '<input type="url" id="' . esc_attr( $id ) . '" name="' . esc_attr( $option_name ) . '" value="' . esc_url( $value ) . '" class="regular-text">';
-		echo ' <button type="button" class="button gep-media-select" data-target="#' . esc_attr( $id ) . '">' . esc_html__( 'Select Image', 'graceful-error-pages' ) . '</button>';
+		echo ' <button type="button" class="button gcep-media-select" data-target="#' . esc_attr( $id ) . '">' . esc_html__( 'Select Image', 'graceful-error-pages' ) . '</button>';
 
 		if ( '' !== $value ) {
-			echo ' <button type="button" class="button gep-media-remove" data-target="#' . esc_attr( $id ) . '">' . esc_html__( 'Remove', 'graceful-error-pages' ) . '</button>';
+			echo ' <button type="button" class="button gcep-media-remove" data-target="#' . esc_attr( $id ) . '">' . esc_html__( 'Remove', 'graceful-error-pages' ) . '</button>';
 		}
 
 		echo '</div>';
 
 		if ( '' !== $value ) {
-			echo '<div class="gep-media-preview"><img src="' . esc_url( $value ) . '" alt=""></div>';
+			echo '<div class="gcep-media-preview"><img src="' . esc_url( $value ) . '" alt=""></div>';
 		}
 
 		echo '<p class="description">' . esc_html( $description ) . '</p>';
@@ -743,7 +728,7 @@ class Settings {
 		echo '<tr>';
 		echo '<th scope="row"><label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label></th>';
 		echo '<td>';
-		echo '<input type="text" id="' . esc_attr( $id ) . '" name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $value ) . '" class="gep-color-picker" data-default-color="' . esc_attr( $def_color ) . '">';
+		echo '<input type="text" id="' . esc_attr( $id ) . '" name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $value ) . '" class="gcep-color-picker" data-default-color="' . esc_attr( $def_color ) . '">';
 		echo '</td>';
 		echo '</tr>';
 	}

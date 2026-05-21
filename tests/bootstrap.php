@@ -14,17 +14,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', '/tmp/wordpress/' );
 }
 
-if ( ! defined( 'GEP_VERSION' ) ) {
-	define( 'GEP_VERSION', '1.0.0' );
+if ( ! defined( 'GCEP_VERSION' ) ) {
+	define( 'GCEP_VERSION', '1.0.0' );
 }
-if ( ! defined( 'GEP_FILE' ) ) {
-	define( 'GEP_FILE', dirname( __DIR__ ) . '/graceful-error-pages.php' );
+if ( ! defined( 'GCEP_FILE' ) ) {
+	define( 'GCEP_FILE', dirname( __DIR__ ) . '/graceful-error-pages.php' );
 }
-if ( ! defined( 'GEP_DIR' ) ) {
-	define( 'GEP_DIR', dirname( __DIR__ ) . '/' );
+if ( ! defined( 'GCEP_DIR' ) ) {
+	define( 'GCEP_DIR', dirname( __DIR__ ) . '/' );
 }
-if ( ! defined( 'GEP_URL' ) ) {
-	define( 'GEP_URL', 'https://example.com/wp-content/plugins/graceful-error-pages/' );
+if ( ! defined( 'GCEP_URL' ) ) {
+	define( 'GCEP_URL', 'https://example.com/wp-content/plugins/graceful-error-pages/' );
 }
 
 require_once dirname( __DIR__ ) . '/vendor/antecedent/patchwork/Patchwork.php';
@@ -158,6 +158,17 @@ if ( ! class_exists( 'wpdb' ) ) {
 		public function esc_like( $text ) {
 			return addcslashes( $text, '_%\\' );
 		}
+	}
+}
+
+if ( ! function_exists( 'wp_doing_cron' ) ) {
+	/**
+	 * Stub for wp_doing_cron() — returns false in tests.
+	 *
+	 * @return bool
+	 */
+	function wp_doing_cron(): bool {
+		return defined( 'DOING_CRON' ) && DOING_CRON;
 	}
 }
 

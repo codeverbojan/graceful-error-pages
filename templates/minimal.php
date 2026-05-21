@@ -35,58 +35,58 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<link rel="stylesheet" href="<?php echo esc_url( (string) $context['css_url'] ); ?>">
 	<?php endif; ?>
 	<style>
-		body.gep-error-page[data-dark-mode] {
-			--gep-brand-color: <?php echo esc_attr( (string) ( $context['brand_color'] ?? '#2563eb' ) ); ?>;
+		body.gcep-error-page[data-dark-mode] {
+			--gcep-brand-color: <?php echo esc_attr( (string) ( $context['brand_color'] ?? '#2563eb' ) ); ?>;
 			<?php if ( ! empty( $context['bg_color'] ) ) : ?>
-			--gep-bg-color: <?php echo esc_attr( (string) $context['bg_color'] ); ?>;
+			--gcep-bg-color: <?php echo esc_attr( (string) $context['bg_color'] ); ?>;
 			<?php endif; ?>
 			<?php if ( ! empty( $context['text_color'] ) ) : ?>
-			--gep-text-color: <?php echo esc_attr( (string) $context['text_color'] ); ?>;
+			--gcep-text-color: <?php echo esc_attr( (string) $context['text_color'] ); ?>;
 			<?php endif; ?>
 		}
 	</style>
 </head>
-<body class="gep-error-page gep-template-minimal" data-dark-mode="<?php echo esc_attr( (string) ( $context['dark_mode'] ?? 'auto' ) ); ?>">
-	<main class="gep-card">
+<body class="gcep-error-page gcep-template-minimal" data-dark-mode="<?php echo esc_attr( (string) ( $context['dark_mode'] ?? 'auto' ) ); ?>">
+	<main class="gcep-card">
 		<?php if ( ! empty( $context['logo_url'] ) ) : ?>
-			<img class="gep-logo" src="<?php echo esc_url( (string) $context['logo_url'] ); ?>" alt="<?php echo esc_attr( (string) ( $context['site_name'] ?? '' ) ); ?>">
+			<img class="gcep-logo" src="<?php echo esc_url( (string) $context['logo_url'] ); ?>" alt="<?php echo esc_attr( (string) ( $context['site_name'] ?? '' ) ); ?>">
 		<?php elseif ( ! empty( $context['icon_url'] ) ) : ?>
-			<img class="gep-icon" src="<?php echo esc_url( (string) $context['icon_url'] ); ?>" alt="<?php echo esc_attr( (string) ( $context['site_name'] ?? '' ) ); ?>">
+			<img class="gcep-icon" src="<?php echo esc_url( (string) $context['icon_url'] ); ?>" alt="<?php echo esc_attr( (string) ( $context['site_name'] ?? '' ) ); ?>">
 		<?php endif; ?>
 
-		<h1 class="gep-title"><?php echo esc_html( (string) ( $context['error_title'] ?? '' ) ); ?></h1>
-		<p class="gep-message"><?php echo wp_kses_post( (string) ( $context['error_message'] ?? '' ) ); ?></p>
+		<h1 class="gcep-title"><?php echo esc_html( (string) ( $context['error_title'] ?? '' ) ); ?></h1>
+		<p class="gcep-message"><?php echo wp_kses_post( (string) ( $context['error_message'] ?? '' ) ); ?></p>
 
-		<div class="gep-actions">
-			<a href="<?php echo esc_url( (string) ( $context['primary_btn_url'] ?? $context['home_url'] ?? '/' ) ); ?>" class="gep-btn gep-btn-primary">
+		<div class="gcep-actions">
+			<a href="<?php echo esc_url( (string) ( $context['primary_btn_url'] ?? $context['home_url'] ?? '/' ) ); ?>" class="gcep-btn gcep-btn-primary">
 				<?php echo esc_html( (string) ( $context['primary_btn_text'] ?? __( 'Go to Homepage', 'graceful-error-pages' ) ) ); ?>
 			</a>
 			<?php if ( ! empty( $context['back_link'] ) ) : ?>
 				<?php
-				$gep_secondary_url  = ! empty( $context['secondary_btn_url'] ) ? $context['secondary_btn_url'] : ( $context['back_url'] ?? '' );
-				$gep_secondary_text = (string) ( $context['secondary_btn_text'] ?? __( 'Go Back', 'graceful-error-pages' ) );
+				$gcep_secondary_url  = ! empty( $context['secondary_btn_url'] ) ? $context['secondary_btn_url'] : ( $context['back_url'] ?? '' );
+				$gcep_secondary_text = (string) ( $context['secondary_btn_text'] ?? __( 'Go Back', 'graceful-error-pages' ) );
 				?>
-				<?php if ( '' !== $gep_secondary_url ) : ?>
-					<a href="<?php echo esc_url( (string) $gep_secondary_url ); ?>" class="gep-btn gep-btn-secondary">
-						<?php echo esc_html( $gep_secondary_text ); ?>
+				<?php if ( '' !== $gcep_secondary_url ) : ?>
+					<a href="<?php echo esc_url( (string) $gcep_secondary_url ); ?>" class="gcep-btn gcep-btn-secondary">
+						<?php echo esc_html( $gcep_secondary_text ); ?>
 					</a>
 				<?php else : ?>
-					<button type="button" class="gep-btn gep-btn-secondary" onclick="history.back()">
-						<?php echo esc_html( $gep_secondary_text ); ?>
+					<button type="button" class="gcep-btn gcep-btn-secondary" onclick="history.back()">
+						<?php echo esc_html( $gcep_secondary_text ); ?>
 					</button>
 				<?php endif; ?>
 			<?php endif; ?>
 		</div>
 
 		<?php if ( ! empty( $context['support_link'] ) ) : ?>
-			<p class="gep-support">
+			<p class="gcep-support">
 				<a href="<?php echo esc_url( (string) $context['support_link'] ); ?>">
 					<?php echo esc_html__( 'Contact Support', 'graceful-error-pages' ); ?>
 				</a>
 			</p>
 		<?php endif; ?>
 
-		<footer class="gep-footer">
+		<footer class="gcep-footer">
 			<?php if ( ! empty( $context['copyright'] ) ) : ?>
 				<?php echo esc_html( (string) $context['copyright'] ); ?>
 			<?php else : ?>

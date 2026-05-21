@@ -118,10 +118,6 @@ class Handler {
 			$title = '';
 		}
 
-		if ( ! is_string( $title ) ) {
-			$title = '';
-		}
-
 		if ( is_string( $args ) ) {
 			$args = [];
 		}
@@ -172,7 +168,7 @@ class Handler {
 				: 'ltr',
 		];
 
-		$template = get_option( 'gep_template', 'minimal' );
+		$template = get_option( 'gcep_template', 'minimal' );
 		$output   = $this->template_engine->render(
 			is_string( $template ) ? $template : 'minimal',
 			$context
@@ -214,11 +210,11 @@ class Handler {
 			return;
 		}
 
-		if ( function_exists( 'get_option' ) && ! get_option( 'gep_fatal_errors', 1 ) ) {
+		if ( function_exists( 'get_option' ) && ! get_option( 'gcep_fatal_errors', 1 ) ) {
 			return;
 		}
 
-		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+		if ( wp_doing_cron() ) {
 			return;
 		}
 
@@ -228,7 +224,7 @@ class Handler {
 		}
 
 		if ( function_exists( 'is_admin' ) && is_admin()
-			&& 'everywhere' !== ( function_exists( 'get_option' ) ? get_option( 'gep_scope', 'frontend' ) : 'frontend' )
+			&& 'everywhere' !== ( function_exists( 'get_option' ) ? get_option( 'gcep_scope', 'frontend' ) : 'frontend' )
 		) {
 			return;
 		}
@@ -256,7 +252,7 @@ class Handler {
 			return true;
 		}
 
-		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+		if ( wp_doing_cron() ) {
 			return true;
 		}
 
@@ -272,7 +268,7 @@ class Handler {
 			return true;
 		}
 
-		$scope = get_option( 'gep_scope', 'frontend' );
+		$scope = get_option( 'gcep_scope', 'frontend' );
 
 		if ( is_admin() && 'frontend' === $scope ) {
 			return true;
@@ -282,7 +278,7 @@ class Handler {
 			return true;
 		}
 
-		if ( get_option( 'gep_admin_bypass', 1 ) && current_user_can( 'manage_options' ) ) {
+		if ( get_option( 'gcep_admin_bypass', 1 ) && current_user_can( 'manage_options' ) ) {
 			return true;
 		}
 
@@ -422,12 +418,12 @@ class Handler {
 	 * @return void
 	 */
 	private function render_fatal_html( array $error ): void {
-		$site_name = function_exists( 'get_option' ) ? get_option( 'gep_site_name', '' ) : '';
+		$site_name = function_exists( 'get_option' ) ? get_option( 'gcep_site_name', '' ) : '';
 		if ( ! is_string( $site_name ) || '' === $site_name ) {
 			$site_name = function_exists( 'get_bloginfo' ) ? get_bloginfo( 'name' ) : '';
 		}
 
-		$brand_color = function_exists( 'get_option' ) ? get_option( 'gep_brand_color', '#2563eb' ) : '#2563eb';
+		$brand_color = function_exists( 'get_option' ) ? get_option( 'gcep_brand_color', '#2563eb' ) : '#2563eb';
 		if ( ! is_string( $brand_color ) || ! preg_match( '/^#[0-9a-fA-F]{3,8}$/', $brand_color ) ) {
 			$brand_color = '#2563eb';
 		}
@@ -491,7 +487,7 @@ class Handler {
 	 * @return bool
 	 */
 	private function should_show_debug(): bool {
-		if ( function_exists( 'get_option' ) && ! get_option( 'gep_show_debug', 1 ) ) {
+		if ( function_exists( 'get_option' ) && ! get_option( 'gcep_show_debug', 1 ) ) {
 			return false;
 		}
 

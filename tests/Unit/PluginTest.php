@@ -42,12 +42,12 @@ class PluginTest extends TestCase {
 	}
 
 	/**
-	 * Test that the GEP_VERSION constant matches the expected version.
+	 * Test that the GCEP_VERSION constant matches the expected version.
 	 *
 	 * @return void
 	 */
 	public function test_version_constant(): void {
-		$this->assertSame( '1.0.0', GEP_VERSION );
+		$this->assertSame( '1.0.0', GCEP_VERSION );
 	}
 
 	/**

@@ -5,12 +5,12 @@
 # Usage: bash bin/bump-version.sh 1.2.0
 #
 # Locations updated:
-#   graceful-error-pages.php  — plugin header (* Version:) and GEP_VERSION define
+#   graceful-error-pages.php  — plugin header (* Version:) and GCEP_VERSION define
 #   readme.txt                — Stable tag:
 #   package.json              — "version"
 #   composer.json              — "version"
-#   phpstan-constants.php     — GEP_VERSION define
-#   tests/bootstrap.php       — GEP_VERSION define
+#   phpstan-constants.php     — GCEP_VERSION define
+#   tests/bootstrap.php       — GCEP_VERSION define
 #   tests/Unit/PluginTest.php — version assertion
 #
 
@@ -48,8 +48,8 @@ done
 # Plugin header: * Version:           X.Y.Z
 sed -i.bak "s/^\( \* Version:[[:space:]]*\)[0-9].*/\1${VERSION}/" "$PLUGIN_FILE"
 
-# GEP_VERSION define in main plugin file.
-sed -i.bak "s/define( 'GEP_VERSION', '[^']*' )/define( 'GEP_VERSION', '${VERSION}' )/" "$PLUGIN_FILE"
+# GCEP_VERSION define in main plugin file.
+sed -i.bak "s/define( 'GCEP_VERSION', '[^']*' )/define( 'GCEP_VERSION', '${VERSION}' )/" "$PLUGIN_FILE"
 
 # readme.txt stable tag.
 sed -i.bak "s/^Stable tag:[[:space:]]*.*/Stable tag: ${VERSION}/" "$README_FILE"
@@ -60,14 +60,14 @@ sed -i.bak "s/\"version\": \"[^\"]*\"/\"version\": \"${VERSION}\"/" "$PACKAGE_FI
 # composer.json version.
 sed -i.bak "s/\"version\": \"[^\"]*\"/\"version\": \"${VERSION}\"/" "$COMPOSER_FILE"
 
-# phpstan-constants.php GEP_VERSION define.
-sed -i.bak "s/define( 'GEP_VERSION', '[^']*' )/define( 'GEP_VERSION', '${VERSION}' )/" "$PHPSTAN_FILE"
+# phpstan-constants.php GCEP_VERSION define.
+sed -i.bak "s/define( 'GCEP_VERSION', '[^']*' )/define( 'GCEP_VERSION', '${VERSION}' )/" "$PHPSTAN_FILE"
 
-# tests/bootstrap.php GEP_VERSION define.
-sed -i.bak "s/define( 'GEP_VERSION', '[^']*' )/define( 'GEP_VERSION', '${VERSION}' )/" "$BOOTSTRAP_FILE"
+# tests/bootstrap.php GCEP_VERSION define.
+sed -i.bak "s/define( 'GCEP_VERSION', '[^']*' )/define( 'GCEP_VERSION', '${VERSION}' )/" "$BOOTSTRAP_FILE"
 
 # PluginTest.php version assertion.
-sed -i.bak "s/assertSame( '[^']*', GEP_VERSION )/assertSame( '${VERSION}', GEP_VERSION )/" "$PLUGIN_TEST"
+sed -i.bak "s/assertSame( '[^']*', GCEP_VERSION )/assertSame( '${VERSION}', GCEP_VERSION )/" "$PLUGIN_TEST"
 
 # Clean up .bak files.
 rm -f "$PLUGIN_FILE.bak" "$README_FILE.bak" "$PACKAGE_FILE.bak" "$COMPOSER_FILE.bak" \
@@ -76,12 +76,12 @@ rm -f "$PLUGIN_FILE.bak" "$README_FILE.bak" "$PACKAGE_FILE.bak" "$COMPOSER_FILE.
 echo "Version bumped to ${VERSION}"
 echo ""
 echo "  Updated:"
-echo "    $PLUGIN_FILE     — header + GEP_VERSION define"
+echo "    $PLUGIN_FILE     — header + GCEP_VERSION define"
 echo "    $README_FILE     — Stable tag"
 echo "    $PACKAGE_FILE    — version"
 echo "    $COMPOSER_FILE   — version"
-echo "    $PHPSTAN_FILE    — GEP_VERSION define"
-echo "    $BOOTSTRAP_FILE  — GEP_VERSION define"
+echo "    $PHPSTAN_FILE    — GCEP_VERSION define"
+echo "    $BOOTSTRAP_FILE  — GCEP_VERSION define"
 echo "    $PLUGIN_TEST     — version assertion"
 echo ""
 

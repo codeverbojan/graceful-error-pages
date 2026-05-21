@@ -29,6 +29,14 @@ Thumbs.db
 /phpunit.xml.dist
 /phpunit.xml
 /patchwork.json
+/webpack.config.js
+/eslint.config.js
+/.eslintrc.js
+/.prettierrc.js
+/.stylelintrc.json
+
+# Source assets (only built output ships).
+/assets/src
 
 # Dependencies and test output.
 /node_modules

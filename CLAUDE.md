@@ -30,11 +30,14 @@ graceful-error-pages/
 │   ├── dark.php                    # Dark background, modern
 │   └── starter.php                 # Bare minimum styled text
 ├── assets/
-│   ├── css/
-│   │   ├── error-page.css          # Error page styles (self-contained, NO CDN)
-│   │   └── admin.css               # Settings page styles
-│   ├── js/
-│   │   └── admin.js                # Live preview, color picker
+│   ├── src/                        # Source (git-tracked)
+│   │   ├── js/
+│   │   │   ├── admin.js            # Admin settings (vanilla JS + jQuery for wpColorPicker)
+│   │   │   └── merge-tags.js       # Merge tag input component (vanilla JS)
+│   │   └── css/
+│   │       ├── admin.css           # Settings page styles
+│   │       └── error-page.css      # Error page styles (standalone, loaded via <link>)
+│   ├── build/                      # Built output (git-ignored, built by @wordpress/scripts)
 │   └── images/                     # Default SVG icons (<10KB total)
 ├── languages/
 │   └── graceful-error-pages.pot    # i18n template
@@ -62,12 +65,12 @@ graceful-error-pages/
 
 Follow the `samplehq-request-form` pattern exactly:
 
-1. **Main file** (`graceful-error-pages.php`): Plugin headers, `declare(strict_types=1)`, ABSPATH guard, define constants (`GEP_VERSION`, `GEP_FILE`, `GEP_DIR`, `GEP_URL`), register PSR-4 autoloader via `spl_autoload_register()` mapping `GracefulErrorPages\` to `src/`, call `Plugin::boot()`
-2. **Plugin class** (`src/Plugin.php`): Private constructor, static `boot()` with boot guard, `register_hooks()`, `activate()`, `deactivate()`. No singleton — store instance in `$GLOBALS['gep_plugin']`
+1. **Main file** (`graceful-error-pages.php`): Plugin headers, `declare(strict_types=1)`, ABSPATH guard, define constants (`GCEP_VERSION`, `GCEP_FILE`, `GCEP_DIR`, `GCEP_URL`), register PSR-4 autoloader via `spl_autoload_register()` mapping `GracefulErrorPages\` to `src/`, call `Plugin::boot()`
+2. **Plugin class** (`src/Plugin.php`): Private constructor, static `boot()` with boot guard, `register_hooks()`, `activate()`, `deactivate()`. No singleton — store instance in `$GLOBALS['gcep_plugin']`
 3. **Namespace:** `GracefulErrorPages` (PSR-4, maps to `src/`)
-4. **Constant prefix:** `GEP_` for all constants
-5. **Option prefix:** `gep_` for all `wp_options` keys
-6. **Hook prefix:** `gep_` for all custom hooks
+4. **Constant prefix:** `GCEP_` for all constants
+5. **Option prefix:** `gcep_` for all `wp_options` keys
+6. **Hook prefix:** `gcep_` for all custom hooks
 
 ### Key Technical Constraints
 
@@ -94,6 +97,12 @@ composer lint:fix                   # PHPCBF auto-fix
 composer analyze                    # PHPStan (level 6)
 composer test                       # PHPUnit unit tests
 composer check                      # All three: lint + analyze + test
+
+# --- JS/CSS Build (@wordpress/scripts) ---
+npm run build                       # Production build (webpack → assets/build/)
+npm run start                       # Dev mode with watch + source maps
+npm run lint:js                     # ESLint on assets/src/
+npm run lint:css                    # Stylelint on assets/src/
 
 # --- Local Dev Environment ---
 npm run env:start                   # Start wp-env (WP 6.9, PHP 8.2)
@@ -124,7 +133,7 @@ vendor/bin/phpunit --filter TestClassName::testMethodName
 - **Nonces on all forms**: `wp_nonce_field()` / `wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'action' )`
 - **Capability checks** on all admin actions: `current_user_can()`
 - **`$wpdb->prepare()`** for all custom SQL
-- **Unique prefix** on all global functions, constants, options — `gep_` / `GEP_` / `GracefulErrorPages\`
+- **Unique prefix** on all global functions, constants, options — `gcep_` / `GCEP_` / `GracefulErrorPages\`
 - **No bundled WP core libraries** (jQuery, etc.) — use what WP ships
 - **JS/CSS enqueued properly** — no inline scripts (except error page templates which are self-contained by necessity)
 - **`wp_json_encode()`** instead of `json_encode()`
@@ -179,7 +188,7 @@ This script runs sequentially:
 1. Validates clean working tree + semver format
 2. Generates changelog from conventional commits
 3. Pauses for review (non-interactive mode continues for Claude)
-4. Bumps version across all locations (plugin header, `GEP_VERSION`, `readme.txt`, `composer.json`, `phpstan-constants.php`, `tests/bootstrap.php`)
+4. Bumps version across all locations (plugin header, `GCEP_VERSION`, `readme.txt`, `composer.json`, `phpstan-constants.php`, `tests/bootstrap.php`)
 5. Injects changelog + upgrade notice into `readme.txt`
 6. Syncs `package-lock.json`
 7. Validates `readme.txt` structure
@@ -188,11 +197,11 @@ This script runs sequentially:
 ### Version Sync Locations
 
 Version must stay in sync across:
-- `graceful-error-pages.php` — plugin header `Version:` + `GEP_VERSION` constant
+- `graceful-error-pages.php` — plugin header `Version:` + `GCEP_VERSION` constant
 - `readme.txt` — `Stable tag:`
 - `composer.json` — `"version"`
-- `phpstan-constants.php` — `GEP_VERSION`
-- `tests/bootstrap.php` — `GEP_VERSION`
+- `phpstan-constants.php` — `GCEP_VERSION`
+- `tests/bootstrap.php` — `GCEP_VERSION`
 
 ### Pre-commit / Pre-push Hooks (Husky)
 
@@ -238,13 +247,14 @@ Follow conventional commit format for automatic changelog generation:
 {
   "devDependencies": {
     "@wordpress/env": "11.5.0",
+    "@wordpress/scripts": "32.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.2"
   }
 }
 ```
 
-No webpack or `@wordpress/scripts` needed — this plugin has minimal JS (admin settings preview only). Enqueue vanilla JS directly.
+Uses `@wordpress/scripts` (webpack) for JS bundling/minification and CSS copying. Source in `assets/src/`, built output in `assets/build/` (git-ignored). Run `npm run build` before testing locally.
 
 ## Key WordPress APIs
 
@@ -284,7 +294,7 @@ The plugin uses Freemius for licensing, checkout, and premium distribution. This
 Freemius auto-strips premium code when generating the free version for wordpress.org. Two mechanisms:
 
 1. **File-level**: Files named `*__premium_only.php` are excluded entirely from the free build
-2. **Block-level**: Code inside `if ( gep_fs()->is__premium_only() ) { ... }` blocks is stripped
+2. **Block-level**: Code inside `if ( gcep_fs()->is__premium_only() ) { ... }` blocks is stripped
 
 Premium features live in `src/Pro/` with `__premium_only` suffixes:
 ```
@@ -302,16 +312,16 @@ src/Pro/
 ### Runtime License Checks
 
 ```php
-gep_fs()->is__premium_only()           // Compile-time: stripped from free build
-gep_fs()->can_use_premium_code()       // Has license AND running premium version
-gep_fs()->is_paying()                  // Has valid paid license
-gep_fs()->is_plan('pro')              // On specific plan or higher
+gcep_fs()->is__premium_only()           // Compile-time: stripped from free build
+gcep_fs()->can_use_premium_code()       // Has license AND running premium version
+gcep_fs()->is_paying()                  // Has valid paid license
+gcep_fs()->is_plan('pro')              // On specific plan or higher
 ```
 
 In mixed files (e.g., Settings.php), use the combined pattern:
 ```php
-if ( gep_fs()->is__premium_only() ) {
-    if ( gep_fs()->can_use_premium_code() ) {
+if ( gcep_fs()->is__premium_only() ) {
+    if ( gcep_fs()->can_use_premium_code() ) {
         $this->render_premium_settings();
     } else {
         $this->render_upgrade_teaser();

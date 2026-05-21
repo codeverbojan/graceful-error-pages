@@ -51,9 +51,9 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_option' )->alias(
 			function ( string $key, $default = false ) {
 				$options = [
-					'gep_scope'        => 'frontend',
-					'gep_admin_bypass' => 1,
-					'gep_template'     => 'minimal',
+					'gcep_scope'        => 'frontend',
+					'gcep_admin_bypass' => 1,
+					'gcep_template'     => 'minimal',
 				];
 				return $options[ $key ] ?? $default;
 			}
@@ -613,9 +613,9 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_option' )->alias(
 			function ( string $key, $default = false ) {
 				$options = [
-					'gep_scope'        => 'admin',
-					'gep_admin_bypass' => true,
-					'gep_template'     => 'minimal',
+					'gcep_scope'        => 'admin',
+					'gcep_admin_bypass' => true,
+					'gcep_template'     => 'minimal',
 				];
 				return $options[ $key ] ?? $default;
 			}

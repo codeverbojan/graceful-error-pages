@@ -13,7 +13,7 @@ async function hideWpNoise( page: Page ) {
 			html.wp-toolbar { padding-top: 0 !important; }
 			#adminmenuwrap { margin-top: 0 !important; }
 			#wpfooter { display: none !important; }
-			.update-nag, .notice:not(.gep-notice), .updated { display: none !important; }
+			.update-nag, .notice:not(.gcep-notice), .updated { display: none !important; }
 			#screen-meta, #screen-meta-links { display: none !important; }
 		`;
 		document.head.appendChild( style );
@@ -27,7 +27,7 @@ async function settle( page: Page, ms = 1500 ) {
 
 async function getPreviewNonce( page: Page ): Promise<string> {
 	return page.evaluate( () => {
-		const el = document.getElementById( 'gep-admin-js-extra' );
+		const el = document.getElementById( 'gcep-admin-js-extra' );
 		if ( el ) {
 			const match = el.textContent?.match( /"previewNonce":"([^"]+)"/ );
 			if ( match ) {
@@ -54,15 +54,15 @@ async function screenshotPreview(
 	overrides: Record<string, string> = {}
 ) {
 	const params = new URLSearchParams( {
-		action: 'gep_preview',
+		action: 'gcep_preview',
 		_ajax_nonce: nonce,
-		gep_template: template,
-		gep_site_name: 'Acme Corp',
-		gep_primary_btn_text: 'Go to Homepage',
-		gep_primary_btn_url: '#',
-		gep_secondary_btn_text: 'Go Back',
-		gep_secondary_btn_url: '#',
-		gep_copyright: '© 2026 Acme Corp. All rights reserved.',
+		gcep_template: template,
+		gcep_site_name: 'Acme Corp',
+		gcep_primary_btn_text: 'Go to Homepage',
+		gcep_primary_btn_url: '#',
+		gcep_secondary_btn_text: 'Go Back',
+		gcep_secondary_btn_url: '#',
+		gcep_copyright: '© 2026 Acme Corp. All rights reserved.',
 		...overrides,
 	} );
 
@@ -94,7 +94,7 @@ async function main() {
 
 	// --- 1. Minimal template (default error page) ---
 	// Navigate to the settings page first to get the preview nonce.
-	await page.goto( `${ BASE }/wp-admin/options-general.php?page=gep-settings` );
+	await page.goto( `${ BASE }/wp-admin/options-general.php?page=gcep-settings` );
 	await settle( page );
 	const nonce = await getPreviewNonce( page );
 	if ( ! nonce ) {
@@ -109,7 +109,7 @@ async function main() {
 
 	// --- 2. Settings — Design tab ---
 	await page.goto(
-		`${ BASE }/wp-admin/options-general.php?page=gep-settings&tab=design`
+		`${ BASE }/wp-admin/options-general.php?page=gcep-settings&tab=design`
 	);
 	await settle( page );
 	await hideWpNoise( page );
@@ -121,7 +121,7 @@ async function main() {
 
 	// --- 3. Settings — Content tab ---
 	await page.goto(
-		`${ BASE }/wp-admin/options-general.php?page=gep-settings&tab=content`
+		`${ BASE }/wp-admin/options-general.php?page=gcep-settings&tab=content`
 	);
 	await settle( page );
 	await hideWpNoise( page );
@@ -137,7 +137,7 @@ async function main() {
 
 	// --- 5. Dark template ---
 	await screenshotPreview( context, nonce, 'dark', 'screenshot-5.png', {
-		gep_dark_mode: 'on',
+		gcep_dark_mode: 'on',
 	} );
 	console.log( '5. Dark template' );
 

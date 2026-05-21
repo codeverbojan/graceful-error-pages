@@ -85,14 +85,14 @@ class TemplateEngine {
 			return '';
 		}
 
-		$file = GEP_DIR . 'templates/' . $template . '.php';
+		$file = GCEP_DIR . 'templates/' . $template . '.php';
 
 		if ( ! file_exists( $file ) ) {
 			return '';
 		}
 
 		$real = realpath( $file );
-		$base = realpath( GEP_DIR . 'templates' );
+		$base = realpath( GCEP_DIR . 'templates' );
 
 		if ( false === $real || false === $base || ! str_starts_with( $real, $base . DIRECTORY_SEPARATOR ) ) {
 			return '';
@@ -111,15 +111,15 @@ class TemplateEngine {
 		$home = home_url( '/' );
 
 		$defaults = [
-			'site_name'          => get_option( 'gep_site_name', get_bloginfo( 'name' ) ),
-			'logo_url'           => get_option( 'gep_logo_url', '' ),
-			'icon_url'           => get_option( 'gep_icon_url', '' ),
-			'brand_color'        => get_option( 'gep_brand_color', AutoDetect::DEFAULT_BRAND_COLOR ),
-			'bg_color'           => get_option( 'gep_bg_color', '' ),
-			'text_color'         => get_option( 'gep_text_color', '' ),
-			'dark_mode'          => get_option( 'gep_dark_mode', 'auto' ),
-			'error_title'        => $this->option_or_fallback( 'gep_error_title', __( 'Something went wrong', 'graceful-error-pages' ) ),
-			'error_message'      => $this->option_or_fallback( 'gep_error_message', __( 'The page you were looking for could not be loaded. Please try again later.', 'graceful-error-pages' ) ),
+			'site_name'          => get_option( 'gcep_site_name', get_bloginfo( 'name' ) ),
+			'logo_url'           => get_option( 'gcep_logo_url', '' ),
+			'icon_url'           => get_option( 'gcep_icon_url', '' ),
+			'brand_color'        => get_option( 'gcep_brand_color', AutoDetect::DEFAULT_BRAND_COLOR ),
+			'bg_color'           => get_option( 'gcep_bg_color', '' ),
+			'text_color'         => get_option( 'gcep_text_color', '' ),
+			'dark_mode'          => get_option( 'gcep_dark_mode', 'auto' ),
+			'error_title'        => $this->option_or_fallback( 'gcep_error_title', __( 'Something went wrong', 'graceful-error-pages' ) ),
+			'error_message'      => $this->option_or_fallback( 'gcep_error_message', __( 'The page you were looking for could not be loaded. Please try again later.', 'graceful-error-pages' ) ),
 			'home_url'           => $home,
 			'back_url'           => '',
 			'back_link'          => false,
@@ -128,13 +128,13 @@ class TemplateEngine {
 			'text_direction'     => is_rtl() ? 'rtl' : 'ltr',
 			'year'               => gmdate( 'Y' ),
 			'template'           => 'minimal',
-			'css_url'            => GEP_URL . 'assets/css/error-page.css',
-			'primary_btn_text'   => $this->option_or_fallback( 'gep_primary_btn_text', __( 'Go to Homepage', 'graceful-error-pages' ) ),
-			'primary_btn_url'    => $this->option_or_fallback( 'gep_primary_btn_url', $home ),
-			'secondary_btn_text' => $this->option_or_fallback( 'gep_secondary_btn_text', __( 'Go Back', 'graceful-error-pages' ) ),
-			'secondary_btn_url'  => get_option( 'gep_secondary_btn_url', '' ),
-			'copyright'          => get_option( 'gep_copyright', '' ),
-			'support_link'       => get_option( 'gep_support_link', '' ),
+			'css_url'            => GCEP_URL . 'assets/build/css/error-page.css',
+			'primary_btn_text'   => $this->option_or_fallback( 'gcep_primary_btn_text', __( 'Go to Homepage', 'graceful-error-pages' ) ),
+			'primary_btn_url'    => $this->option_or_fallback( 'gcep_primary_btn_url', $home ),
+			'secondary_btn_text' => $this->option_or_fallback( 'gcep_secondary_btn_text', __( 'Go Back', 'graceful-error-pages' ) ),
+			'secondary_btn_url'  => get_option( 'gcep_secondary_btn_url', '' ),
+			'copyright'          => get_option( 'gcep_copyright', '' ),
+			'support_link'       => get_option( 'gcep_support_link', '' ),
 		];
 
 		return array_merge( $defaults, $context );

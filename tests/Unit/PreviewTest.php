@@ -75,7 +75,7 @@ class PreviewTest extends TestCase {
 	public function test_register_hooks_ajax_action(): void {
 		Functions\expect( 'add_action' )
 			->once()
-			->with( 'wp_ajax_gep_preview', [ $this->preview, 'handle' ] );
+			->with( 'wp_ajax_gcep_preview', [ $this->preview, 'handle' ] );
 
 		$this->preview->register();
 
@@ -88,8 +88,8 @@ class PreviewTest extends TestCase {
 	 * @return void
 	 */
 	public function test_constants_are_defined(): void {
-		$this->assertSame( 'gep_preview', Preview::ACTION );
-		$this->assertSame( 'gep_preview', Preview::NONCE_ACTION );
+		$this->assertSame( 'gcep_preview', Preview::ACTION );
+		$this->assertSame( 'gcep_preview', Preview::NONCE_ACTION );
 	}
 
 	/**
@@ -98,8 +98,8 @@ class PreviewTest extends TestCase {
 	 * @return void
 	 */
 	public function test_context_includes_secondary_button_from_get(): void {
-		$_GET['gep_secondary_btn_text'] = 'Contact Us';
-		$_GET['gep_secondary_btn_url']  = 'https://example.com/contact';
+		$_GET['gcep_secondary_btn_text'] = 'Contact Us';
+		$_GET['gcep_secondary_btn_url']  = 'https://example.com/contact';
 
 		Functions\when( 'get_option' )->justReturn( '' );
 
@@ -121,8 +121,8 @@ class PreviewTest extends TestCase {
 		Functions\when( 'get_option' )->alias(
 			function ( string $key, $default = false ) {
 				$options = [
-					'gep_secondary_btn_text' => 'Saved Text',
-					'gep_secondary_btn_url'  => 'https://example.com/saved',
+					'gcep_secondary_btn_text' => 'Saved Text',
+					'gcep_secondary_btn_url'  => 'https://example.com/saved',
 				];
 				return $options[ $key ] ?? $default;
 			}
@@ -162,19 +162,19 @@ class PreviewTest extends TestCase {
 	 */
 	public function test_context_supports_all_optional_fields(): void {
 		$all_options = [
-			'gep_logo_url'           => 'https://example.com/logo.png',
-			'gep_icon_url'           => 'https://example.com/icon.png',
-			'gep_brand_color'        => '#ff0000',
-			'gep_bg_color'           => '#ffffff',
-			'gep_text_color'         => '#333333',
-			'gep_dark_mode'          => '1',
-			'gep_site_name'          => 'Test Site',
-			'gep_primary_btn_text'   => 'Go Home',
-			'gep_primary_btn_url'    => 'https://example.com',
-			'gep_secondary_btn_text' => 'Contact',
-			'gep_secondary_btn_url'  => 'https://example.com/contact',
-			'gep_support_link'       => 'https://example.com/support',
-			'gep_copyright'          => '2026 Test',
+			'gcep_logo_url'           => 'https://example.com/logo.png',
+			'gcep_icon_url'           => 'https://example.com/icon.png',
+			'gcep_brand_color'        => '#ff0000',
+			'gcep_bg_color'           => '#ffffff',
+			'gcep_text_color'         => '#333333',
+			'gcep_dark_mode'          => '1',
+			'gcep_site_name'          => 'Test Site',
+			'gcep_primary_btn_text'   => 'Go Home',
+			'gcep_primary_btn_url'    => 'https://example.com',
+			'gcep_secondary_btn_text' => 'Contact',
+			'gcep_secondary_btn_url'  => 'https://example.com/contact',
+			'gcep_support_link'       => 'https://example.com/support',
+			'gcep_copyright'          => '2026 Test',
 		];
 
 		foreach ( $all_options as $key => $value ) {
@@ -225,11 +225,11 @@ class PreviewTest extends TestCase {
 	 * @return void
 	 */
 	public function test_get_params_override_saved_options(): void {
-		$_GET['gep_site_name'] = 'From GET';
+		$_GET['gcep_site_name'] = 'From GET';
 
 		Functions\when( 'get_option' )->alias(
 			function ( string $key, $default = false ) {
-				if ( 'gep_site_name' === $key ) {
+				if ( 'gcep_site_name' === $key ) {
 					return 'From Database';
 				}
 				return $default;
@@ -239,7 +239,7 @@ class PreviewTest extends TestCase {
 		$method = new \ReflectionMethod( $this->preview, 'get_preview_param' );
 		$method->setAccessible( true );
 
-		$result = $method->invoke( $this->preview, 'gep_site_name', '' );
+		$result = $method->invoke( $this->preview, 'gcep_site_name', '' );
 
 		$this->assertSame( 'From GET', $result );
 	}
@@ -252,7 +252,7 @@ class PreviewTest extends TestCase {
 	public function test_falls_back_to_saved_option(): void {
 		Functions\when( 'get_option' )->alias(
 			function ( string $key, $default = false ) {
-				if ( 'gep_site_name' === $key ) {
+				if ( 'gcep_site_name' === $key ) {
 					return 'From Database';
 				}
 				return $default;
@@ -262,7 +262,7 @@ class PreviewTest extends TestCase {
 		$method = new \ReflectionMethod( $this->preview, 'get_preview_param' );
 		$method->setAccessible( true );
 
-		$result = $method->invoke( $this->preview, 'gep_site_name', '' );
+		$result = $method->invoke( $this->preview, 'gcep_site_name', '' );
 
 		$this->assertSame( 'From Database', $result );
 	}
@@ -281,7 +281,7 @@ class PreviewTest extends TestCase {
 		$method = new \ReflectionMethod( $this->preview, 'get_preview_param' );
 		$method->setAccessible( true );
 
-		$result = $method->invoke( $this->preview, 'gep_site_name', 'default_val' );
+		$result = $method->invoke( $this->preview, 'gcep_site_name', 'default_val' );
 
 		$this->assertSame( '', $result );
 	}
@@ -297,7 +297,7 @@ class PreviewTest extends TestCase {
 		$method = new \ReflectionMethod( $this->preview, 'get_preview_param' );
 		$method->setAccessible( true );
 
-		$result = $method->invoke( $this->preview, 'gep_test', 'fallback' );
+		$result = $method->invoke( $this->preview, 'gcep_test', 'fallback' );
 
 		$this->assertSame( 'fallback', $result );
 	}

@@ -59,7 +59,7 @@ composer analyze              # PHPStan level 6
 - PHP: WordPress Coding Standards (WPCS 3.x) via PHPCS
 - PHP 8.0+ strict types: every file starts with `declare(strict_types=1)`
 - PSR-4 autoloading: `GracefulErrorPages\` maps to `src/`
-- Constant prefix: `GEP_`, option prefix: `gep_`, hook prefix: `gep_`
+- Constant prefix: `GCEP_`, option prefix: `gcep_`, hook prefix: `gcep_`
 - All output escaped at point of output
 - All input sanitized with appropriate WordPress functions
 - Nonces on all forms

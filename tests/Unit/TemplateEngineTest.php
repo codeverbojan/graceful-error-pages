@@ -308,7 +308,7 @@ class TemplateEngineTest extends TestCase {
 		$this->assertStringContainsString( 'Test Error', $output );
 		$this->assertStringContainsString( 'Something broke.', $output );
 		$this->assertStringContainsString( '#ff0000', $output );
-		$this->assertStringContainsString( 'gep-template-minimal', $output );
+		$this->assertStringContainsString( 'gcep-template-minimal', $output );
 		$this->assertStringContainsString( 'data-dark-mode=', $output );
 	}
 
@@ -324,7 +324,7 @@ class TemplateEngineTest extends TestCase {
 			'dark_mode' => 'off',
 		] );
 
-		$this->assertStringContainsString( 'gep-template-dark', $output );
+		$this->assertStringContainsString( 'gcep-template-dark', $output );
 		$this->assertStringContainsString( 'data-dark-mode="disabled"', $output );
 	}
 
@@ -342,7 +342,7 @@ class TemplateEngineTest extends TestCase {
 			'site_name' => 'Acme Corp',
 		] );
 
-		$this->assertStringContainsString( 'gep-logo-text', $output );
+		$this->assertStringContainsString( 'gcep-logo-text', $output );
 		$this->assertStringContainsString( 'Acme Corp', $output );
 	}
 
@@ -359,8 +359,8 @@ class TemplateEngineTest extends TestCase {
 			'icon_url' => '',
 		] );
 
-		$this->assertStringContainsString( 'gep-template-friendly', $output );
-		$this->assertStringContainsString( 'gep-illustration', $output );
+		$this->assertStringContainsString( 'gcep-template-friendly', $output );
+		$this->assertStringContainsString( 'gcep-illustration', $output );
 		$this->assertStringContainsString( '<svg', $output );
 	}
 
@@ -376,7 +376,7 @@ class TemplateEngineTest extends TestCase {
 			'error_title' => 'Starter Test',
 		] );
 
-		$this->assertStringContainsString( 'gep-template-starter', $output );
+		$this->assertStringContainsString( 'gcep-template-starter', $output );
 		$this->assertStringContainsString( 'Starter Test', $output );
 		$this->assertStringContainsString( '<!DOCTYPE html>', $output );
 	}
@@ -444,7 +444,7 @@ class TemplateEngineTest extends TestCase {
 			'support_link' => 'https://example.com/support',
 		] );
 
-		$this->assertStringContainsString( 'gep-support', $output );
+		$this->assertStringContainsString( 'gcep-support', $output );
 		$this->assertStringContainsString( 'https://example.com/support', $output );
 	}
 
