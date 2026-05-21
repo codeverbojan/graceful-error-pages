@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".wordpress-org/banner-1544x500.png" alt="Graceful Error Pages" width="100%" />
+</p>
+
 # Graceful Error Pages
 
 [![CI](https://github.com/codeverbojan/graceful-error-pages/actions/workflows/ci.yml/badge.svg)](https://github.com/codeverbojan/graceful-error-pages/actions/workflows/ci.yml)
@@ -87,6 +91,35 @@ Templates support `auto`, `on`, or `off` dark mode. In `auto` mode, the error pa
 
 ### Accessible
 Settings UI follows WCAG 2.1: proper ARIA attributes on the merge tag autocomplete (combobox pattern with listbox, `aria-activedescendant`, `aria-selected`), focus trap on the preview modal, keyboard navigation, and focus restoration.
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src=".wordpress-org/screenshot-1.png" alt="Minimal template" width="800" /><br />
+  <strong>Minimal Template</strong> -- the default, replacing the WordPress error screen with a clean, centered layout
+</p>
+
+<p align="center">
+  <img src=".wordpress-org/screenshot-2.png" alt="Settings Design tab" width="800" /><br />
+  <strong>Settings -- Design Tab</strong> -- template picker, logo, colors, and dark mode
+</p>
+
+<p align="center">
+  <img src=".wordpress-org/screenshot-3.png" alt="Settings Content tab" width="800" /><br />
+  <strong>Settings -- Content Tab</strong> -- error title, message, buttons, and merge tags
+</p>
+
+<p align="center">
+  <img src=".wordpress-org/screenshot-4.png" alt="Corporate template" width="800" /><br />
+  <strong>Corporate Template</strong> -- logo-forward, structured layout with clear hierarchy
+</p>
+
+<p align="center">
+  <img src=".wordpress-org/screenshot-5.png" alt="Dark template" width="800" /><br />
+  <strong>Dark Template</strong> -- dark background with modern aesthetic
+</p>
 
 ---
 
