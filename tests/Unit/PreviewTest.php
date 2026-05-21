@@ -51,6 +51,9 @@ class PreviewTest extends TestCase {
 		Functions\when( '__' )->returnArg();
 		Functions\when( 'sanitize_text_field' )->returnArg();
 		Functions\when( 'wp_unslash' )->returnArg();
+		Functions\when( 'esc_url_raw' )->returnArg();
+		Functions\when( 'sanitize_hex_color' )->returnArg();
+		Functions\when( 'wp_kses_post' )->returnArg();
 	}
 
 	/**

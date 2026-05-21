@@ -144,7 +144,10 @@ class Handler {
 		$charset      = '' !== $args['charset']
 			? $args['charset']
 			: get_bloginfo( 'charset' );
-		$charset      = is_string( $charset ) ? preg_replace( '/[\r\n]/', '', $charset ) : 'UTF-8';
+		$charset      = is_string( $charset ) ? preg_replace( '/[^a-zA-Z0-9\-]/', '', $charset ) : 'UTF-8';
+		if ( '' === $charset ) {
+			$charset = 'UTF-8';
+		}
 
 		$response_code = (int) $args['response'];
 		if ( $response_code < 100 || $response_code > 599 ) {

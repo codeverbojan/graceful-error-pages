@@ -7,7 +7,9 @@
  * @package GracefulErrorPages
  */
 
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+declare( strict_types=1 );
+
+if ( ! defined( 'ABSPATH' ) || ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
