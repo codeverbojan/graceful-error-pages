@@ -3,20 +3,20 @@
  * Graceful Error Pages
  *
  * @package           GracefulErrorPages
- * @author            Codever
- * @copyright         2026 Codever
+ * @author            Bojan Josifoski
+ * @copyright         2026 Bojan Josifoski
  * @license           GPL-2.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name:       Graceful Error Pages
- * Plugin URI:        https://bojanjosifoski.com/graceful-error-pages
+ * Plugin URI:        https://github.com/codeverbojan/graceful-error-pages
  * Description:       Replace WordPress's ugly error screens with branded, professional pages — in one click.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 6.4
  * Requires PHP:      8.0
  * Tested up to:      7.0
- * Author:            Codever
- * Author URI:        https://codever.io
+ * Author:            Bojan Josifoski
+ * Author URI:        https://bojanjosifoski.com
  * Text Domain:       graceful-error-pages
  * Domain Path:       /languages
  * License:           GPLv2 or later
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'GCEP_VERSION' ) ) {
-	define( 'GCEP_VERSION', '1.0.2' );
+	define( 'GCEP_VERSION', '1.0.3' );
 }
 if ( ! defined( 'GCEP_FILE' ) ) {
 	define( 'GCEP_FILE', __FILE__ );

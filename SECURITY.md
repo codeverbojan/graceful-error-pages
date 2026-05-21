@@ -12,7 +12,7 @@ If you discover a security vulnerability, please report it responsibly.
 
 **Do not open a public GitHub issue for security vulnerabilities.**
 
-Instead, email **security@codever.io** with:
+Instead, email **bojan.josifoski@codever.io** with:
 
 - A description of the vulnerability
 - Steps to reproduce
