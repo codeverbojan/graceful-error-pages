@@ -57,7 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php echo esc_html( $gcep_secondary_text ); ?>
 					</a>
 				<?php else : ?>
-					<button type="button" class="gcep-btn gcep-btn-secondary" onclick="history.back()">
+					<button type="button" class="gcep-btn gcep-btn-secondary" data-gcep-back>
 						<?php echo esc_html( $gcep_secondary_text ); ?>
 					</button>
 				<?php endif; ?>
@@ -80,5 +80,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php endif; ?>
 		</footer>
 	</main>
+	<?php wp_print_inline_script_tag( 'document.addEventListener("click",function(e){if(e.target.closest("[data-gcep-back]"))history.back()})' ); ?>
 </body>
 </html>

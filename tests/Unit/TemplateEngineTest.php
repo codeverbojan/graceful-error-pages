@@ -335,6 +335,7 @@ class TemplateEngineTest extends TestCase {
 		Functions\when( 'wp_enqueue_style' )->justReturn( true );
 		Functions\when( 'wp_add_inline_style' )->justReturn( true );
 		Functions\when( 'wp_print_styles' )->justReturn( '' );
+		Functions\when( 'wp_print_inline_script_tag' )->justReturn( '' );
 	}
 
 	/**
