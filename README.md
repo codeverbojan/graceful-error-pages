@@ -5,23 +5,29 @@
 # Graceful Error Pages
 
 [![CI](https://github.com/codeverbojan/graceful-error-pages/actions/workflows/ci.yml/badge.svg)](https://github.com/codeverbojan/graceful-error-pages/actions/workflows/ci.yml)
-[![PHP 8.0+](https://img.shields.io/badge/PHP-8.0%2B-blue.svg)](https://www.php.net/)
-[![WordPress 6.4+](https://img.shields.io/badge/WordPress-6.4%2B-blue.svg)](https://wordpress.org/)
+[![PHP 8.0+](https://img.shields.io/badge/PHP-8.0%2B-8892BF.svg?logo=php&logoColor=white)](https://www.php.net/)
+[![WordPress 6.4–7.0](https://img.shields.io/badge/WordPress-6.4–7.0-21759B.svg?logo=wordpress&logoColor=white)](https://wordpress.org/)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![PHPStan Level 6](https://img.shields.io/badge/PHPStan-Level%206-brightgreen.svg)](https://phpstan.org/)
 
 Replace WordPress's ugly error screens with branded, professional pages -- in one click.
 
 Works immediately on activation. Auto-detects your site name, logo, and brand color. No configuration required.
 
+> **Current version: 1.0.6** · 5 templates · 149 tests · Zero-config activation
+
 ---
 
 ## At a Glance
 
-- **Purpose:** Replace the default `wp_die()` and PHP fatal error screens with branded pages
-- **Best for:** Any WordPress site that cares about user experience during errors
-- **Setup:** Zero-config -- activate and it works
-- **Performance:** Zero overhead on normal page loads; only runs when an error occurs
-- **API safe:** REST API, AJAX, JSON, and JSONP responses are never touched
+| | |
+|---|---|
+| **Purpose** | Replace `wp_die()` and PHP fatal error screens with branded pages |
+| **Best for** | Any WordPress site that cares about user experience during errors |
+| **Setup** | Zero-config -- activate and it works |
+| **Performance** | Zero overhead on normal page loads; only runs when an error occurs |
+| **API safe** | REST API, AJAX, JSON, and JSONP responses are never touched |
+| **Requires** | WordPress 6.4+ · PHP 8.0+ |
 
 ---
 
@@ -50,11 +56,13 @@ On activation, the plugin reads your site name from `bloginfo`, your logo from t
 ### Five Built-in Templates
 Each template is fully self-contained with inline CSS -- no theme dependencies, no external CDN, no build step. They work even when your theme is completely broken.
 
-- **Minimal** -- clean, light, centered layout (default)
-- **Corporate** -- logo-forward, structured with clear hierarchy
-- **Friendly** -- warm, encouraging tone with illustration
-- **Dark** -- dark background, modern aesthetic
-- **Starter** -- bare minimum styled text
+| Template | Style | Best for |
+|---|---|---|
+| **Minimal** *(default)* | Clean, light, centered | Most sites |
+| **Corporate** | Logo-forward, structured | Business / enterprise |
+| **Friendly** | Warm, encouraging, illustrated | Community / SaaS |
+| **Dark** | Dark background, modern | Developer / tech |
+| **Starter** | Bare minimum styled text | Maximum customization |
 
 ### Merge Tags
 Dynamic content in any text field. Type `{` to get an autocomplete dropdown with available tags:
@@ -191,7 +199,7 @@ npm run env:clean            # Reset database
 
 ## Testing
 
-The plugin has 122 unit tests with 332 assertions.
+The plugin has 149 unit tests with 409 assertions.
 
 ```bash
 # Unit tests (no WordPress needed, fast)
@@ -226,29 +234,44 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the pull request process.
 ## Project Structure
 
 ```
-src/                         7 PHP files
-  AutoDetect.php             Logo/color/name detection from Customizer
-  Handler.php                wp_die handler + fatal error shutdown handler
-  Plugin.php                 Bootstrap: boot(), hooks, activate, deactivate
-  Preview.php                AJAX preview endpoint for live preview modal
-  Sanitizer.php              Input sanitization helpers
-  Settings.php               Admin settings page (WordPress Settings API)
-  TemplateEngine.php         Template loading + merge tag rendering
-templates/                   5 error page templates
-  minimal.php                Clean, light, centered (default)
-  corporate.php              Logo-forward, structured
-  friendly.php               Warm, encouraging
-  dark.php                   Dark background, modern
-  starter.php                Bare minimum styled text
-assets/
-  css/error-page.css         Error page styles (self-contained, no CDN)
-  css/admin.css              Settings page styles
-  js/admin.js                Preview modal, color picker, media uploader
-  js/merge-tags.js           Merge tag input with pills and autocomplete
-  images/                    Template thumbnails + default error icon (SVG)
-tests/
-  Unit/                      122 PHPUnit tests (Brain\Monkey, no WordPress)
-  bootstrap.php              Test bootstrap with WP function stubs
+graceful-error-pages/
+├── graceful-error-pages.php          # Plugin bootstrap: headers, autoloader, boot
+├── uninstall.php                     # Clean removal of plugin options
+│
+├── src/                              # 8 PHP classes (PSR-4: GracefulErrorPages\)
+│   ├── Plugin.php                    #   Bootstrap: boot(), hooks, activate, deactivate
+│   ├── Handler.php                   #   wp_die handler + fatal error shutdown handler
+│   ├── Settings.php                  #   Admin settings page (WordPress Settings API)
+│   ├── TemplateEngine.php            #   Template loading + merge tag rendering
+│   ├── AutoDetect.php                #   Logo/color/name detection from Customizer
+│   ├── Preview.php                   #   AJAX preview endpoint for live preview modal
+│   ├── Sanitizer.php                 #   Input sanitization helpers
+│   └── Helpers/
+│       └── Assets.php                #   Script/style registration and enqueuing
+│
+├── templates/                        # 5 self-contained error page templates
+│   ├── minimal.php                   #   Clean, light, centered (default)
+│   ├── corporate.php                 #   Logo-forward, structured
+│   ├── friendly.php                  #   Warm, encouraging
+│   ├── dark.php                      #   Dark background, modern
+│   └── starter.php                   #   Bare minimum styled text
+│
+├── assets/
+│   ├── src/                          # Source (git-tracked)
+│   │   ├── js/admin.js               #   Preview modal, color picker, media uploader
+│   │   ├── js/merge-tags.js          #   Merge tag input with pills + autocomplete
+│   │   ├── css/admin.css             #   Settings page styles
+│   │   └── css/error-page.css        #   Error page styles (self-contained)
+│   ├── build/                        # Webpack output (git-ignored)
+│   └── images/                       # Template thumbnails + default SVG icon
+│
+├── tests/
+│   ├── Unit/                         # 149 PHPUnit tests (Brain\Monkey, no WP needed)
+│   └── bootstrap.php                 # Test bootstrap with WP function stubs
+│
+├── languages/                        # i18n (.pot file)
+├── .github/workflows/                # CI + Release pipelines
+└── bin/                              # Build and release scripts
 ```
 
 ---
@@ -282,14 +305,26 @@ The release script validates the working tree, bumps version across all sync poi
 
 ## Roadmap
 
-### v1.0.0 (current)
-Custom `wp_die()` handler, PHP fatal error handler, five templates, admin settings with live preview, merge tag system with autocomplete, auto-detection of site branding, dark mode support, full i18n, comprehensive test suite.
+### v1.x (current -- free)
+Custom `wp_die()` handler, PHP fatal error handler, five templates, admin settings with live preview, merge tag system with autocomplete, auto-detection of site branding, dark mode support, scope control, full i18n, 149-test suite.
 
-### v2.0 (planned -- premium)
+### v2.0 (planned -- premium via Freemius)
 Redirect rules, error analytics, custom template editor, multisite network settings, WooCommerce-specific templates, white-label, import/export, error classification.
+
+---
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on the development workflow, coding standards, and pull request process.
 
 ---
 
 ## License
 
 GPL-2.0-or-later. See [LICENSE](LICENSE).
+
+---
+
+<p align="center">
+  Made by <a href="https://codever.io">Codever</a>
+</p>
