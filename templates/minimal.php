@@ -3,7 +3,7 @@
  * Minimal error page template.
  *
  * Clean, centered layout with logo/icon, error title, message, and CTAs.
- * Self-contained: uses a bundled CSS file via <link> — no theme dependencies.
+ * Self-contained: CSS via wp_print_styles() — no theme dependencies.
  *
  * Available $context keys:
  *   site_name, logo_url, icon_url, brand_color, bg_color, text_color,

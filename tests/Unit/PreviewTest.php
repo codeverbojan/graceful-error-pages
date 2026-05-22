@@ -83,6 +83,34 @@ class PreviewTest extends TestCase {
 	}
 
 	/**
+	 * Test: handle rejects non-GET requests with 405.
+	 *
+	 * @return void
+	 */
+	public function test_handle_rejects_non_get_request(): void {
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+
+		$wp_die_code = 0;
+
+		Functions\when( 'wp_die' )->alias(
+			function ( $message, $title, $args ) use ( &$wp_die_code ) {
+				$wp_die_code = $args['response'] ?? 0;
+				throw new \RuntimeException( 'wp_die' );
+			}
+		);
+
+		try {
+			$this->preview->handle();
+		} catch ( \RuntimeException $e ) {
+			// Expected — wp_die stub throws to halt execution.
+		}
+
+		$this->assertSame( 405, $wp_die_code );
+
+		unset( $_SERVER['REQUEST_METHOD'] );
+	}
+
+	/**
 	 * Test: NONCE_ACTION and ACTION constants have expected values.
 	 *
 	 * @return void

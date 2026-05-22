@@ -68,6 +68,10 @@ class Preview {
 	 * @return void
 	 */
 	public function handle(): void {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'GET' !== strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) ) {
+			wp_die( '', '', [ 'response' => 405 ] );
+		}
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to preview error pages.', 'graceful-error-pages' ), '', [ 'response' => 403 ] );
 		}

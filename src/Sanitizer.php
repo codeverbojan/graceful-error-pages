@@ -52,40 +52,6 @@ class Sanitizer {
 	}
 
 	/**
-	 * Sanitize a URL value.
-	 *
-	 * @param mixed $value Raw input.
-	 * @return string Sanitized URL or empty string.
-	 */
-	public static function url( $value ): string {
-		if ( ! is_string( $value ) ) {
-			return '';
-		}
-
-		return esc_url_raw( $value );
-	}
-
-	/**
-	 * Sanitize a plain text field.
-	 *
-	 * @param mixed $value Raw input.
-	 * @return string Sanitized text.
-	 */
-	public static function text( $value ): string {
-		return is_string( $value ) ? sanitize_text_field( $value ) : '';
-	}
-
-	/**
-	 * Sanitize a rich text field (allows safe HTML).
-	 *
-	 * @param mixed $value Raw input.
-	 * @return string Sanitized HTML.
-	 */
-	public static function kses( $value ): string {
-		return is_string( $value ) ? wp_kses_post( $value ) : '';
-	}
-
-	/**
 	 * Sanitize a boolean stored as 0/1 integer.
 	 *
 	 * @param mixed $value Raw input.
