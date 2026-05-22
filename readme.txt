@@ -4,7 +4,7 @@ Tags: error-page, wp-die, branding, error-handling, custom-error
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,10 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 
 == Changelog ==
 
+= 1.0.7 =
+* Fix: Replace inline onclick handlers with wp_print_inline_script_tag
+
+
 = 1.0.6 =
 * Fix: Increase PHPStan memory limit to 1G for CI
 
@@ -143,6 +147,9 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 * Full i18n support
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Replace inline onclick handlers with wp_print_inline_script_tag
 
 = 1.0.6 =
 Increase PHPStan memory limit to 1G for CI
