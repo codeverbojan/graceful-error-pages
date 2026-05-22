@@ -59,115 +59,116 @@ class Settings {
 	/**
 	 * Option definitions grouped by tab.
 	 *
-	 * Each entry: option_name => [type, sanitize callback name, default].
+	 * Each entry: option_name => [type, sanitize_callback, default].
+	 * Sanitize callbacks use WordPress core functions where possible.
 	 *
-	 * @var array<string, array<string, array{type: string, sanitize: string, default: mixed}>>
+	 * @var array<string, array<string, array{type: string, sanitize_callback: callable, default: mixed}>>
 	 */
 	private const TAB_OPTIONS = [
 		'design'   => [
 			'gcep_template'    => [
-				'type'     => 'string',
-				'sanitize' => 'template',
-				'default'  => 'minimal',
+				'type'              => 'string',
+				'sanitize_callback' => [ Sanitizer::class, 'template' ],
+				'default'           => 'minimal',
 			],
 			'gcep_logo_url'    => [
-				'type'     => 'string',
-				'sanitize' => 'url',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'esc_url_raw',
+				'default'           => '',
 			],
 			'gcep_icon_url'    => [
-				'type'     => 'string',
-				'sanitize' => 'url',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'esc_url_raw',
+				'default'           => '',
 			],
 			'gcep_brand_color' => [
-				'type'     => 'string',
-				'sanitize' => 'hex_color',
-				'default'  => '#2563eb',
+				'type'              => 'string',
+				'sanitize_callback' => [ Sanitizer::class, 'hex_color' ],
+				'default'           => '#2563eb',
 			],
 			'gcep_bg_color'    => [
-				'type'     => 'string',
-				'sanitize' => 'hex_color',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => [ Sanitizer::class, 'hex_color' ],
+				'default'           => '',
 			],
 			'gcep_text_color'  => [
-				'type'     => 'string',
-				'sanitize' => 'hex_color',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => [ Sanitizer::class, 'hex_color' ],
+				'default'           => '',
 			],
 			'gcep_dark_mode'   => [
-				'type'     => 'string',
-				'sanitize' => 'dark_mode',
-				'default'  => 'auto',
+				'type'              => 'string',
+				'sanitize_callback' => [ Sanitizer::class, 'dark_mode' ],
+				'default'           => 'auto',
 			],
 		],
 		'content'  => [
 			'gcep_site_name'          => [
-				'type'     => 'string',
-				'sanitize' => 'text',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
 			],
 			'gcep_error_title'        => [
-				'type'     => 'string',
-				'sanitize' => 'text',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
 			],
 			'gcep_error_message'      => [
-				'type'     => 'string',
-				'sanitize' => 'kses',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'wp_kses_post',
+				'default'           => '',
 			],
 			'gcep_primary_btn_text'   => [
-				'type'     => 'string',
-				'sanitize' => 'text',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
 			],
 			'gcep_primary_btn_url'    => [
-				'type'     => 'string',
-				'sanitize' => 'url',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'esc_url_raw',
+				'default'           => '',
 			],
 			'gcep_secondary_btn_text' => [
-				'type'     => 'string',
-				'sanitize' => 'text',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
 			],
 			'gcep_secondary_btn_url'  => [
-				'type'     => 'string',
-				'sanitize' => 'url',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'esc_url_raw',
+				'default'           => '',
 			],
 			'gcep_support_link'       => [
-				'type'     => 'string',
-				'sanitize' => 'url',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'esc_url_raw',
+				'default'           => '',
 			],
 			'gcep_copyright'          => [
-				'type'     => 'string',
-				'sanitize' => 'text',
-				'default'  => '',
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
 			],
 		],
 		'behavior' => [
 			'gcep_scope'        => [
-				'type'     => 'string',
-				'sanitize' => 'scope',
-				'default'  => 'frontend',
+				'type'              => 'string',
+				'sanitize_callback' => [ Sanitizer::class, 'scope' ],
+				'default'           => 'frontend',
 			],
 			'gcep_fatal_errors' => [
-				'type'     => 'integer',
-				'sanitize' => 'boolean',
-				'default'  => 1,
+				'type'              => 'integer',
+				'sanitize_callback' => [ Sanitizer::class, 'boolean' ],
+				'default'           => 1,
 			],
 			'gcep_show_debug'   => [
-				'type'     => 'integer',
-				'sanitize' => 'boolean',
-				'default'  => 1,
+				'type'              => 'integer',
+				'sanitize_callback' => [ Sanitizer::class, 'boolean' ],
+				'default'           => 1,
 			],
 			'gcep_admin_bypass' => [
-				'type'     => 'integer',
-				'sanitize' => 'boolean',
-				'default'  => 1,
+				'type'              => 'integer',
+				'sanitize_callback' => [ Sanitizer::class, 'boolean' ],
+				'default'           => 1,
 			],
 		],
 	];
@@ -227,7 +228,7 @@ class Settings {
 					$option_name,
 					[
 						'type'              => $def['type'],
-						'sanitize_callback' => [ Sanitizer::class, $def['sanitize'] ],
+						'sanitize_callback' => $def['sanitize_callback'],
 						'default'           => $def['default'],
 					]
 				);
@@ -350,7 +351,7 @@ class Settings {
 	/**
 	 * Get all option definitions across all tabs.
 	 *
-	 * @return array<string, array{type: string, sanitize: string, default: mixed}>
+	 * @return array<string, array{type: string, sanitize_callback: callable, default: mixed}>
 	 */
 	public static function get_all_option_defs(): array {
 		$all = [];

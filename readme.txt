@@ -39,7 +39,17 @@ matches your brand — automatically, the moment you activate it.
 2. Your site's error pages are instantly branded with auto-detected settings
 3. Optionally customize via Settings > Error Pages
 
-**Source code:** [github.com/codeverbojan/graceful-error-pages](https://github.com/codeverbojan/graceful-error-pages)
+**Source Code**
+
+The full source code, including unminified JavaScript and build tools, is available at:
+[github.com/codeverbojan/graceful-error-pages](https://github.com/codeverbojan/graceful-error-pages)
+
+To build from source:
+
+1. Clone the repository
+2. Run `composer install`
+3. Run `npm install`
+4. Run `npm run build`
 
 == Installation ==
 
@@ -111,13 +121,6 @@ actually called or a fatal error occurs. There is zero performance impact on nor
 
 
 = 1.0.0 =
-* Initial commit — Graceful Error Pages WordPress plugin
-* Fix: Wp.org compliance audit fixes
-* Fix: Pin composer platform to PHP 8.1 for CI matrix compatibility
-* Fix: Harden error handler for real-world edge cases
-
-
-= 1.0.0 =
 * Initial release
 * Custom wp_die() handler with branded error pages
 * PHP fatal error shutdown handler with self-contained styling
@@ -137,9 +140,6 @@ Add FSE/block theme brand color detection, fix PCP warnings
 
 = 1.0.1 =
 Add @wordpress/scripts build process, rename prefix to gcep, upgrade PHPStan 2
-
-= 1.0.0 =
-1 new feature(s), 3 fix(es).
 
 = 1.0.0 =
 Initial release.

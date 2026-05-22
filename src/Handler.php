@@ -48,7 +48,7 @@ class Handler {
 		];
 	}
 
-	private const RESERVED_MEMORY_SIZE = 16384;
+	private const RESERVED_MEMORY_SIZE = 32768;
 
 	/**
 	 * The template engine.
@@ -169,16 +169,13 @@ class Handler {
 		];
 
 		$template = get_option( 'gcep_template', 'minimal' );
-		$output   = $this->template_engine->render(
-			is_string( $template ) ? $template : 'minimal',
-			$context
-		);
+		$template = is_string( $template ) ? $template : 'minimal';
 
-		if ( '' === $output ) {
-			$output = $this->template_engine->render( 'minimal', $context );
+		if ( ! $this->template_engine->has_template( $template ) ) {
+			$template = 'minimal';
 		}
 
-		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Template handles escaping.
+		$this->template_engine->display( $template, $context );
 
 		if ( $args['exit'] ) {
 			die();
@@ -199,11 +196,6 @@ class Handler {
 
 		if ( null === $error || ! in_array( $error['type'], self::FATAL_ERROR_TYPES, true ) ) {
 			return;
-		}
-
-		if ( str_contains( $error['message'], 'Allowed memory size' ) ) {
-			// phpcs:ignore WordPress.PHP.IniSet.memory_limit_Disallowed,WordPress.PHP.NoSilencedErrors.Discouraged -- Required to render error page after OOM; wp_raise_memory_limit() is unavailable in shutdown context.
-			@ini_set( 'memory_limit', (string) ( memory_get_usage() + 5 * 1024 * 1024 ) );
 		}
 
 		if ( $this->is_cli() ) {
@@ -424,7 +416,7 @@ class Handler {
 		}
 
 		$brand_color = function_exists( 'get_option' ) ? get_option( 'gcep_brand_color', '#2563eb' ) : '#2563eb';
-		if ( ! is_string( $brand_color ) || ! preg_match( '/^#[0-9a-fA-F]{3,8}$/', $brand_color ) ) {
+		if ( ! is_string( $brand_color ) || ! preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/', $brand_color ) ) {
 			$brand_color = '#2563eb';
 		}
 		$home_url = function_exists( 'home_url' ) ? home_url( '/' ) : '/';
@@ -442,29 +434,39 @@ class Handler {
 		$show_debug = $this->should_show_debug();
 		$lang       = function_exists( 'get_locale' ) ? str_replace( '_', '-', get_locale() ) : 'en';
 
-		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- All values escaped inline below.
+		$fatal_css = '*{margin:0;padding:0;box-sizing:border-box}'
+			. 'body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;'
+			. 'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;'
+			. 'background:#f9fafb;color:#1f2937}'
+			. '.c{max-width:480px;text-align:center;padding:2.5rem 2rem;background:#fff;border-radius:8px;'
+			. 'box-shadow:0 1px 3px rgba(0,0,0,.1)}'
+			. 'h1{font-size:1.5rem;margin-bottom:.75rem}'
+			. 'p{color:#6b7280;margin-bottom:2rem}'
+			. 'a{display:inline-block;padding:.625rem 1.5rem;color:#fff;'
+			. 'background:' . esc_attr( $brand_color ) . ';'
+			. 'border-radius:8px;text-decoration:none;font-size:.875rem}'
+			. 'a:focus-visible{outline:2px solid ' . esc_attr( $brand_color ) . ';outline-offset:2px}'
+			. '.d{margin-top:1.5rem;padding:1rem;background:#fef2f2;border-radius:6px;text-align:left;'
+			. 'font-size:.8rem;color:#991b1b;word-break:break-all}'
+			. '@media(prefers-color-scheme:dark){body{background:#111827;color:#f9fafb}'
+			. '.c{background:#1f2937}.d{background:#451a1a;color:#fca5a5}}';
+
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- All dynamic values are escaped with esc_html(), esc_attr(), or esc_url() at point of output.
 		echo '<!DOCTYPE html><html lang="' . esc_attr( $lang ) . '"><head>';
 		echo '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">';
 		echo '<meta name="robots" content="noindex,nofollow">';
 		echo '<title>' . esc_html__( 'Server Error', 'graceful-error-pages' ) . '</title>';
-		echo '<style>';
-		echo '*{margin:0;padding:0;box-sizing:border-box}';
-		echo 'body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;';
-		echo 'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
-		echo 'background:#f9fafb;color:#1f2937}';
-		echo '.c{max-width:480px;text-align:center;padding:2.5rem 2rem;background:#fff;border-radius:8px;';
-		echo 'box-shadow:0 1px 3px rgba(0,0,0,.1)}';
-		echo 'h1{font-size:1.5rem;margin-bottom:.75rem}';
-		echo 'p{color:#6b7280;margin-bottom:2rem}';
-		echo 'a{display:inline-block;padding:.625rem 1.5rem;color:#fff;';
-		echo 'background:' . esc_attr( $brand_color ) . ';';
-		echo 'border-radius:8px;text-decoration:none;font-size:.875rem}';
-		echo 'a:focus-visible{outline:2px solid ' . esc_attr( $brand_color ) . ';outline-offset:2px}';
-		echo '.d{margin-top:1.5rem;padding:1rem;background:#fef2f2;border-radius:6px;text-align:left;';
-		echo 'font-size:.8rem;color:#991b1b;word-break:break-all}';
-		echo '@media(prefers-color-scheme:dark){body{background:#111827;color:#f9fafb}';
-		echo '.c{background:#1f2937}.d{background:#451a1a;color:#fca5a5}}';
-		echo '</style></head><body><main class="c">';
+
+		if ( function_exists( 'wp_print_styles' ) ) {
+			$version = defined( 'GCEP_VERSION' ) ? constant( 'GCEP_VERSION' ) : '1.0.0';
+			wp_register_style( 'gcep-fatal-error', false, [], $version );
+			wp_add_inline_style( 'gcep-fatal-error', $fatal_css );
+			wp_print_styles( [ 'gcep-fatal-error' ] );
+		} else {
+			echo '<style>' . $fatal_css . '</style>'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Fallback when WP style system unavailable during early fatal.
+		}
+
+		echo '</head><body><main class="c">';
 		echo '<h1>' . esc_html__( 'Something went wrong', 'graceful-error-pages' ) . '</h1>';
 		echo '<p>' . esc_html__( 'We encountered an unexpected error. Please try again later.', 'graceful-error-pages' ) . '</p>';
 		echo '<a href="' . esc_url( $home_url ) . '">' . esc_html__( 'Go to Homepage', 'graceful-error-pages' ) . '</a>';

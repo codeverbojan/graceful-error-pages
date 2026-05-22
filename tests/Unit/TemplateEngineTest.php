@@ -66,6 +66,56 @@ class TemplateEngineTest extends TestCase {
 	}
 
 	/**
+	 * Test that has_template returns true for valid templates.
+	 *
+	 * @return void
+	 */
+	public function test_has_template_returns_true_for_valid(): void {
+		$this->assertTrue( $this->engine->has_template( 'minimal' ) );
+		$this->assertTrue( $this->engine->has_template( 'corporate' ) );
+	}
+
+	/**
+	 * Test that has_template returns false for invalid templates.
+	 *
+	 * @return void
+	 */
+	public function test_has_template_returns_false_for_invalid(): void {
+		$this->assertFalse( $this->engine->has_template( '' ) );
+		$this->assertFalse( $this->engine->has_template( '../wp-config' ) );
+		$this->assertFalse( $this->engine->has_template( 'nonexistent' ) );
+	}
+
+	/**
+	 * Test that display outputs template directly without buffering.
+	 *
+	 * @return void
+	 */
+	public function test_display_outputs_template(): void {
+		$this->stub_render_functions();
+
+		$this->expectOutputRegex( '/<!DOCTYPE html>/' );
+
+		$this->engine->display( 'minimal', [
+			'error_title'   => 'Display Test',
+			'error_message' => 'Direct output.',
+		] );
+	}
+
+	/**
+	 * Test that display with invalid template produces no output.
+	 *
+	 * @return void
+	 */
+	public function test_display_invalid_template_no_output(): void {
+		$this->stub_wp_context_functions();
+
+		$this->expectOutputString( '' );
+
+		$this->engine->display( 'nonexistent', [] );
+	}
+
+	/**
 	 * Test that path traversal in template name is rejected.
 	 *
 	 * @return void
@@ -276,12 +326,25 @@ class TemplateEngineTest extends TestCase {
 	}
 
 	/**
+	 * Stub WP style enqueue functions called by enqueue_error_styles().
+	 *
+	 * @return void
+	 */
+	private function stub_style_functions(): void {
+		Functions\when( 'wp_register_style' )->justReturn( true );
+		Functions\when( 'wp_enqueue_style' )->justReturn( true );
+		Functions\when( 'wp_add_inline_style' )->justReturn( true );
+		Functions\when( 'wp_print_styles' )->justReturn( '' );
+	}
+
+	/**
 	 * Stub all WP functions needed for template rendering.
 	 *
 	 * @return void
 	 */
 	private function stub_render_functions(): void {
 		$this->stub_wp_context_functions();
+		$this->stub_style_functions();
 		Functions\when( 'esc_html__' )->returnArg();
 		Functions\when( 'esc_html' )->returnArg();
 		Functions\when( 'esc_attr' )->returnArg();
@@ -307,7 +370,6 @@ class TemplateEngineTest extends TestCase {
 		$this->assertStringContainsString( '<!DOCTYPE html>', $output );
 		$this->assertStringContainsString( 'Test Error', $output );
 		$this->assertStringContainsString( 'Something broke.', $output );
-		$this->assertStringContainsString( '#ff0000', $output );
 		$this->assertStringContainsString( 'gcep-template-minimal', $output );
 		$this->assertStringContainsString( 'data-dark-mode=', $output );
 	}
@@ -455,6 +517,7 @@ class TemplateEngineTest extends TestCase {
 	 */
 	public function test_render_includes_lang_attribute(): void {
 		$this->stub_wp_context_functions();
+		$this->stub_style_functions();
 		Functions\when( 'esc_html__' )->returnArg();
 		Functions\when( 'esc_html' )->returnArg();
 		Functions\when( 'esc_attr' )->returnArg();
@@ -637,6 +700,7 @@ class TemplateEngineTest extends TestCase {
 	 */
 	public function test_render_resolves_tags_in_copyright_before_escaping(): void {
 		$this->stub_wp_context_functions();
+		$this->stub_style_functions();
 		Functions\when( 'esc_html__' )->returnArg();
 		Functions\when( 'esc_attr' )->returnArg();
 		Functions\when( 'esc_url' )->returnArg();
@@ -717,6 +781,7 @@ class TemplateEngineTest extends TestCase {
 	 */
 	public function test_render_resolves_tags_in_error_message(): void {
 		$this->stub_wp_context_functions();
+		$this->stub_style_functions();
 		Functions\when( 'esc_html__' )->returnArg();
 		Functions\when( 'esc_html' )->alias(
 			function ( $text ) {
@@ -813,5 +878,241 @@ class TemplateEngineTest extends TestCase {
 
 		$this->assertStringContainsString( '&lt;script&gt;', $result );
 		$this->assertStringNotContainsString( '<script>', $result );
+	}
+
+	/**
+	 * Test that build_css_custom_properties returns valid CSS for brand color.
+	 *
+	 * @return void
+	 */
+	public function test_build_css_custom_properties_with_brand_color(): void {
+		$method = new \ReflectionMethod( $this->engine, 'build_css_custom_properties' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $this->engine, [ 'brand_color' => '#ff0000' ] );
+
+		$this->assertStringContainsString( '--gcep-brand-color: #ff0000', $result );
+		$this->assertStringContainsString( 'body.gcep-error-page[data-dark-mode]', $result );
+	}
+
+	/**
+	 * Test that build_css_custom_properties includes all three color properties.
+	 *
+	 * @return void
+	 */
+	public function test_build_css_custom_properties_all_colors(): void {
+		$method = new \ReflectionMethod( $this->engine, 'build_css_custom_properties' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $this->engine, [
+			'brand_color' => '#3b82f6',
+			'bg_color'    => '#000000',
+			'text_color'  => '#ffffff',
+		] );
+
+		$this->assertStringContainsString( '--gcep-brand-color: #3b82f6', $result );
+		$this->assertStringContainsString( '--gcep-bg-color: #000000', $result );
+		$this->assertStringContainsString( '--gcep-text-color: #ffffff', $result );
+	}
+
+	/**
+	 * Test that build_css_custom_properties returns empty string with no colors.
+	 *
+	 * @return void
+	 */
+	public function test_build_css_custom_properties_empty_without_colors(): void {
+		$method = new \ReflectionMethod( $this->engine, 'build_css_custom_properties' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $this->engine, [] );
+
+		$this->assertSame( '', $result );
+	}
+
+	/**
+	 * Test that build_css_custom_properties rejects invalid hex values.
+	 *
+	 * @return void
+	 */
+	public function test_build_css_custom_properties_rejects_invalid_hex(): void {
+		$method = new \ReflectionMethod( $this->engine, 'build_css_custom_properties' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $this->engine, [
+			'brand_color' => 'red; background: url(evil)',
+			'bg_color'    => 'not-a-hex',
+			'text_color'  => '#xyz',
+		] );
+
+		$this->assertSame( '', $result );
+	}
+
+	/**
+	 * Test that build_css_custom_properties accepts shorthand hex.
+	 *
+	 * @return void
+	 */
+	public function test_build_css_custom_properties_accepts_shorthand_hex(): void {
+		$method = new \ReflectionMethod( $this->engine, 'build_css_custom_properties' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $this->engine, [ 'brand_color' => '#f00' ] );
+
+		$this->assertStringContainsString( '--gcep-brand-color: #f00', $result );
+	}
+
+	/**
+	 * Test that build_css_custom_properties skips empty color strings.
+	 *
+	 * @return void
+	 */
+	public function test_build_css_custom_properties_skips_empty_strings(): void {
+		$method = new \ReflectionMethod( $this->engine, 'build_css_custom_properties' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $this->engine, [
+			'brand_color' => '#3b82f6',
+			'bg_color'    => '',
+			'text_color'  => '',
+		] );
+
+		$this->assertStringContainsString( '--gcep-brand-color: #3b82f6', $result );
+		$this->assertStringNotContainsString( '--gcep-bg-color', $result );
+		$this->assertStringNotContainsString( '--gcep-text-color', $result );
+	}
+
+	/**
+	 * Test that enqueue_error_styles registers with CSS URL when provided.
+	 *
+	 * @return void
+	 */
+	public function test_enqueue_error_styles_with_css_url(): void {
+		$css_url         = 'https://example.com/error-page.css';
+		$register_args   = [];
+		$enqueue_args    = [];
+		$inline_called   = false;
+
+		Functions\when( 'wp_register_style' )->alias(
+			function () use ( &$register_args ) {
+				$register_args = func_get_args();
+			}
+		);
+		Functions\when( 'wp_enqueue_style' )->alias(
+			function ( string $handle ) use ( &$enqueue_args ) {
+				$enqueue_args[] = $handle;
+			}
+		);
+		Functions\when( 'wp_add_inline_style' )->alias(
+			function () use ( &$inline_called ) {
+				$inline_called = true;
+			}
+		);
+
+		$this->engine->enqueue_error_styles( [ 'css_url' => $css_url ] );
+
+		$this->assertSame( 'gcep-error-page', $register_args[0] );
+		$this->assertSame( $css_url, $register_args[1] );
+		$this->assertContains( 'gcep-error-page', $enqueue_args );
+		$this->assertFalse( $inline_called );
+	}
+
+	/**
+	 * Test that enqueue_error_styles registers virtual style when no CSS URL.
+	 *
+	 * @return void
+	 */
+	public function test_enqueue_error_styles_without_css_url(): void {
+		$register_args = [];
+		$inline_called = false;
+
+		Functions\when( 'wp_register_style' )->alias(
+			function () use ( &$register_args ) {
+				$register_args = func_get_args();
+			}
+		);
+		Functions\when( 'wp_enqueue_style' )->justReturn( true );
+		Functions\when( 'wp_add_inline_style' )->alias(
+			function () use ( &$inline_called ) {
+				$inline_called = true;
+			}
+		);
+
+		$this->engine->enqueue_error_styles( [] );
+
+		$this->assertSame( 'gcep-error-page', $register_args[0] );
+		$this->assertFalse( $register_args[1] );
+		$this->assertFalse( $inline_called );
+	}
+
+	/**
+	 * Test that enqueue_error_styles adds inline CSS for brand color.
+	 *
+	 * @return void
+	 */
+	public function test_enqueue_error_styles_adds_inline_css_for_colors(): void {
+		$inline_handle = '';
+		$inline_css    = '';
+
+		Functions\when( 'wp_register_style' )->justReturn( true );
+		Functions\when( 'wp_enqueue_style' )->justReturn( true );
+		Functions\when( 'wp_add_inline_style' )->alias(
+			function ( string $handle, string $css ) use ( &$inline_handle, &$inline_css ) {
+				$inline_handle = $handle;
+				$inline_css    = $css;
+			}
+		);
+
+		$this->engine->enqueue_error_styles( [ 'brand_color' => '#ff0000' ] );
+
+		$this->assertSame( 'gcep-error-page', $inline_handle );
+		$this->assertStringContainsString( '--gcep-brand-color: #ff0000', $inline_css );
+	}
+
+	/**
+	 * Test that enqueue_error_styles handles CSS URL + brand color together.
+	 *
+	 * @return void
+	 */
+	public function test_enqueue_error_styles_css_url_and_colors(): void {
+		$css_url       = 'https://example.com/error-page.css';
+		$register_args = [];
+		$inline_css    = '';
+
+		Functions\when( 'wp_register_style' )->alias(
+			function () use ( &$register_args ) {
+				$register_args = func_get_args();
+			}
+		);
+		Functions\when( 'wp_enqueue_style' )->justReturn( true );
+		Functions\when( 'wp_add_inline_style' )->alias(
+			function ( string $handle, string $css ) use ( &$inline_css ) {
+				$inline_css = $css;
+			}
+		);
+
+		$this->engine->enqueue_error_styles( [
+			'css_url'     => $css_url,
+			'brand_color' => '#3b82f6',
+		] );
+
+		$this->assertSame( $css_url, $register_args[1] );
+		$this->assertStringContainsString( '--gcep-brand-color: #3b82f6', $inline_css );
+	}
+
+	/**
+	 * Test that build_css_custom_properties rejects invalid-length hex values.
+	 *
+	 * @return void
+	 */
+	public function test_build_css_custom_properties_rejects_invalid_length_hex(): void {
+		$method = new \ReflectionMethod( $this->engine, 'build_css_custom_properties' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $this->engine, [
+			'brand_color' => '#12345',
+			'bg_color'    => '#1234567',
+		] );
+
+		$this->assertSame( '', $result );
 	}
 }

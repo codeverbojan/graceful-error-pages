@@ -240,8 +240,49 @@ class SettingsTest extends TestCase {
 
 		foreach ( $defs as $name => $def ) {
 			$this->assertArrayHasKey( 'type', $def, "Option {$name} missing 'type' key" );
-			$this->assertArrayHasKey( 'sanitize', $def, "Option {$name} missing 'sanitize' key" );
+			$this->assertArrayHasKey( 'sanitize_callback', $def, "Option {$name} missing 'sanitize_callback' key" );
 			$this->assertArrayHasKey( 'default', $def, "Option {$name} missing 'default' key" );
 		}
+	}
+
+	/**
+	 * Test that sanitize_callbacks are actual callables.
+	 *
+	 * @return void
+	 */
+	public function test_sanitize_callbacks_are_callable(): void {
+		Functions\when( 'sanitize_text_field' )->returnArg();
+		Functions\when( 'esc_url_raw' )->returnArg();
+		Functions\when( 'wp_kses_post' )->returnArg();
+
+		$defs = Settings::get_all_option_defs();
+
+		foreach ( $defs as $name => $def ) {
+			$this->assertTrue(
+				is_callable( $def['sanitize_callback'] ),
+				"Option {$name} sanitize_callback is not callable"
+			);
+		}
+	}
+
+	/**
+	 * Test register_settings passes sanitize_callback to register_setting.
+	 *
+	 * @return void
+	 */
+	public function test_register_settings_passes_sanitize_callback(): void {
+		$callbacks = [];
+
+		Functions\when( 'register_setting' )->alias(
+			function ( string $group, string $option_name, array $args ) use ( &$callbacks ) {
+				$callbacks[ $option_name ] = $args['sanitize_callback'] ?? null;
+			}
+		);
+
+		$this->settings->register_settings();
+
+		$this->assertSame( 'sanitize_text_field', $callbacks['gcep_site_name'] );
+		$this->assertSame( 'esc_url_raw', $callbacks['gcep_logo_url'] );
+		$this->assertSame( 'wp_kses_post', $callbacks['gcep_error_message'] );
 	}
 }

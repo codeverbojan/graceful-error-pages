@@ -82,10 +82,8 @@ class Preview {
 
 		$context = $this->build_preview_context();
 
-		$output = $this->template_engine->render( $template, $context );
-
-		if ( '' === $output ) {
-			$output = $this->template_engine->render( 'minimal', $context );
+		if ( ! $this->template_engine->has_template( $template ) ) {
+			$template = 'minimal';
 		}
 
 		if ( ! headers_sent() ) {
@@ -94,10 +92,9 @@ class Preview {
 			header( 'X-Robots-Tag: noindex, nofollow' );
 		}
 
-		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Template handles escaping.
+		$this->template_engine->display( $template, $context );
 
-		// Using die() instead of wp_die() to avoid triggering the plugin's own error handler.
-		die(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		die();
 	}
 
 	/**

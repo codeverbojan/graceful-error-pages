@@ -46,10 +46,51 @@ class TemplateEngine {
 
 		$context = $this->build_context( $context );
 		$context = $this->resolve_context_tags( $context );
+		$this->enqueue_error_styles( $context );
 
 		$output = $this->load_template( $file, $context );
 
 		return $this->replace_merge_tags( $output, $context );
+	}
+
+	/**
+	 * Output a template directly (no output buffering).
+	 *
+	 * Each value is escaped at point of output inside the template file itself
+	 * (esc_html, esc_attr, esc_url, wp_kses_post). This avoids capturing the
+	 * full HTML into a variable and then echoing it unescaped.
+	 *
+	 * Unlike render(), this does not run post-render merge tag replacement.
+	 * Templates must use $context variables, not raw {tag} text in markup.
+	 *
+	 * @param string               $template Template slug (e.g. 'minimal').
+	 * @param array<string, mixed> $context  Template variables.
+	 * @return void
+	 */
+	public function display( string $template, array $context = [] ): void {
+		$file = $this->resolve_path( $template );
+
+		if ( '' === $file ) {
+			return;
+		}
+
+		$context = $this->build_context( $context );
+		$context = $this->resolve_context_tags( $context );
+		$this->enqueue_error_styles( $context );
+
+		unset( $context['file'] );
+
+		include $file;
+	}
+
+	/**
+	 * Check whether a template slug resolves to a valid file.
+	 *
+	 * @param string $template Template slug.
+	 * @return bool
+	 */
+	public function has_template( string $template ): bool {
+		return '' !== $this->resolve_path( $template );
 	}
 
 	/**
@@ -65,6 +106,64 @@ class TemplateEngine {
 			'dark'      => __( 'Dark', 'graceful-error-pages' ),
 			'starter'   => __( 'Starter', 'graceful-error-pages' ),
 		];
+	}
+
+	/**
+	 * Register and enqueue the error page stylesheet and inline CSS custom properties.
+	 *
+	 * Uses wp_register_style() + wp_enqueue_style() + wp_add_inline_style()
+	 * so templates can output styles via wp_print_styles().
+	 *
+	 * @param array<string, mixed> $context Template context.
+	 * @return void
+	 */
+	public function enqueue_error_styles( array $context ): void {
+		$css_url = (string) ( $context['css_url'] ?? '' );
+		$version = defined( 'GCEP_VERSION' ) ? constant( 'GCEP_VERSION' ) : '1.0.0';
+
+		if ( '' !== $css_url ) {
+			wp_register_style( 'gcep-error-page', $css_url, [], $version );
+		} else {
+			wp_register_style( 'gcep-error-page', false, [], $version );
+		}
+		wp_enqueue_style( 'gcep-error-page' );
+
+		$inline_css = $this->build_css_custom_properties( $context );
+		if ( '' !== $inline_css ) {
+			wp_add_inline_style( 'gcep-error-page', $inline_css );
+		}
+	}
+
+	/**
+	 * Build CSS custom properties from context values.
+	 *
+	 * @param array<string, mixed> $context Template context.
+	 * @return string CSS rule or empty string.
+	 */
+	private function build_css_custom_properties( array $context ): string {
+		$hex_pattern = '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/';
+		$props       = [];
+
+		$brand = (string) ( $context['brand_color'] ?? '' );
+		if ( '' !== $brand && preg_match( $hex_pattern, $brand ) ) {
+			$props[] = '--gcep-brand-color: ' . $brand;
+		}
+
+		$bg = (string) ( $context['bg_color'] ?? '' );
+		if ( '' !== $bg && preg_match( $hex_pattern, $bg ) ) {
+			$props[] = '--gcep-bg-color: ' . $bg;
+		}
+
+		$text = (string) ( $context['text_color'] ?? '' );
+		if ( '' !== $text && preg_match( $hex_pattern, $text ) ) {
+			$props[] = '--gcep-text-color: ' . $text;
+		}
+
+		if ( empty( $props ) ) {
+			return '';
+		}
+
+		return "body.gcep-error-page[data-dark-mode] {\n\t" . implode( ";\n\t", $props ) . ";\n}";
 	}
 
 	/**

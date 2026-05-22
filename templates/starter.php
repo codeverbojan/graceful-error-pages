@@ -23,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Self-contained error page, wp_head() unavailable.
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo esc_attr( str_replace( '_', '-', function_exists( 'get_locale' ) ? get_locale() : 'en' ) ); ?>" dir="<?php echo esc_attr( (string) ( $context['text_direction'] ?? 'ltr' ) ); ?>">
@@ -32,20 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="robots" content="noindex, nofollow">
 	<title><?php echo esc_html( (string) ( $context['error_title'] ?? '' ) ); ?></title>
-	<?php if ( ! empty( $context['css_url'] ) ) : ?>
-		<link rel="stylesheet" href="<?php echo esc_url( (string) $context['css_url'] ); ?>">
-	<?php endif; ?>
-	<style>
-		body.gcep-error-page[data-dark-mode] {
-			--gcep-brand-color: <?php echo esc_attr( (string) ( $context['brand_color'] ?? '#2563eb' ) ); ?>;
-			<?php if ( ! empty( $context['bg_color'] ) ) : ?>
-			--gcep-bg-color: <?php echo esc_attr( (string) $context['bg_color'] ); ?>;
-			<?php endif; ?>
-			<?php if ( ! empty( $context['text_color'] ) ) : ?>
-			--gcep-text-color: <?php echo esc_attr( (string) $context['text_color'] ); ?>;
-			<?php endif; ?>
-		}
-	</style>
+	<?php wp_print_styles( [ 'gcep-error-page' ] ); ?>
 </head>
 <body class="gcep-error-page gcep-template-starter" data-dark-mode="<?php echo esc_attr( (string) ( $context['dark_mode'] ?? 'auto' ) ); ?>">
 	<main class="gcep-card">
@@ -97,5 +83,3 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</main>
 </body>
 </html>
-<?php
-// phpcs:enable

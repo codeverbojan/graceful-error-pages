@@ -44,6 +44,7 @@ class HandlerTest extends TestCase {
 		Monkey\setUp();
 
 		$this->mock_engine = $this->createMock( TemplateEngine::class );
+		$this->mock_engine->method( 'has_template' )->willReturn( true );
 		$this->handler     = new Handler( $this->mock_engine );
 
 		Functions\when( '__' )->returnArg();
@@ -68,6 +69,28 @@ class HandlerTest extends TestCase {
 	protected function tear_down(): void {
 		Monkey\tearDown();
 		parent::tear_down();
+	}
+
+	/**
+	 * Configure mock engine to expect a display() call and echo the given HTML.
+	 *
+	 * @param string   $template  Template slug.
+	 * @param callable $ctx_check Callback to verify context.
+	 * @param string   $html      Output to echo.
+	 * @return void
+	 */
+	private function expect_display( string $template, callable $ctx_check, string $html ): void {
+		$this->mock_engine
+			->expects( $this->once() )
+			->method( 'display' )
+			->with( $template, $this->callback( $ctx_check ) )
+			->willReturnCallback(
+				function () use ( $html ) {
+					echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+			);
+
+		$this->expectOutputString( $html );
 	}
 
 	/**
@@ -182,21 +205,15 @@ class HandlerTest extends TestCase {
 		);
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'Test error' === $ctx['error_message']
-							&& 'Something went wrong' === $ctx['error_title'];
-					}
-				)
-			)
-			->willReturn( '<html>Test</html>' );
 
-		$this->expectOutputString( '<html>Test</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'Test error' === $ctx['error_message']
+					&& 'Something went wrong' === $ctx['error_title'];
+			},
+			'<html>Test</html>'
+		);
 
 		$this->handler->handle_wp_die( 'Test error', '', [ 'exit' => false ] );
 	}
@@ -217,20 +234,13 @@ class HandlerTest extends TestCase {
 
 		$error = new \WP_Error( 'test', 'WP Error message' );
 
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'WP Error message' === $ctx['error_message'];
-					}
-				)
-			)
-			->willReturn( '<html>Error</html>' );
-
-		$this->expectOutputString( '<html>Error</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'WP Error message' === $ctx['error_message'];
+			},
+			'<html>Error</html>'
+		);
 
 		$this->handler->handle_wp_die( $error, '', [ 'exit' => false ] );
 	}
@@ -249,19 +259,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'Link Expired' === $ctx['error_title'];
-					}
-				)
-			)
-			->willReturn( '<html>Expired</html>' );
-
-		$this->expectOutputString( '<html>Expired</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'Link Expired' === $ctx['error_title'];
+			},
+			'<html>Expired</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'The link you followed has expired.',
@@ -284,19 +288,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'Custom Title' === $ctx['error_title'];
-					}
-				)
-			)
-			->willReturn( '<html>Custom</html>' );
-
-		$this->expectOutputString( '<html>Custom</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'Custom Title' === $ctx['error_title'];
+			},
+			'<html>Custom</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'The link you followed has expired.',
@@ -341,19 +339,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ) use ( $expected_title ): bool {
-						return $expected_title === $ctx['error_title'];
-					}
-				)
-			)
-			->willReturn( '<html>Smart</html>' );
-
-		$this->expectOutputString( '<html>Smart</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ) use ( $expected_title ): bool {
+				return $expected_title === $ctx['error_title'];
+			},
+			'<html>Smart</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			$message,
@@ -376,19 +368,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'Something went wrong' === $ctx['error_title'];
-					}
-				)
-			)
-			->willReturn( '<html>Fallback</html>' );
-
-		$this->expectOutputString( '<html>Fallback</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'Something went wrong' === $ctx['error_title'];
+			},
+			'<html>Fallback</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'Some random unmatched error message.',
@@ -411,19 +397,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'Forbidden' === $ctx['error_title'];
-					}
-				)
-			)
-			->willReturn( '<html>Case</html>' );
-
-		$this->expectOutputString( '<html>Case</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'Forbidden' === $ctx['error_title'];
+			},
+			'<html>Case</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'FORBIDDEN access to resource.',
@@ -446,21 +426,15 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 500 === $ctx['response_code']
-							&& false === $ctx['back_link']
-							&& 'UTF-8' === $ctx['charset'];
-					}
-				)
-			)
-			->willReturn( '<html>Defaults</html>' );
-
-		$this->expectOutputString( '<html>Defaults</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 500 === $ctx['response_code']
+					&& false === $ctx['back_link']
+					&& 'UTF-8' === $ctx['charset'];
+			},
+			'<html>Defaults</html>'
+		);
 
 		$this->handler->handle_wp_die( 'Error', '', [ 'exit' => false ] );
 	}
@@ -529,21 +503,14 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 403 === $ctx['response_code']
-							&& 'Forbidden' === $ctx['error_message'];
-					}
-				)
-			)
-			->willReturn( '<html>403</html>' );
-
-		$this->expectOutputString( '<html>403</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 403 === $ctx['response_code']
+					&& 'Forbidden' === $ctx['error_message'];
+			},
+			'<html>403</html>'
+		);
 
 		$this->handler->handle_wp_die( 'Forbidden', [ 'response' => 403, 'exit' => false ] );
 	}
@@ -562,20 +529,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return '0' === $ctx['error_message'];
-					}
-				)
-			)
-			->willReturn( '<html>Zero</html>' );
-
-		$this->expectOutputString( '<html>Zero</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return '0' === $ctx['error_message'];
+			},
+			'<html>Zero</html>'
+		);
 
 		$this->handler->handle_wp_die( 0, '', [ 'exit' => false ] );
 	}
@@ -645,20 +605,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 500 === $ctx['response_code'];
-					}
-				)
-			)
-			->willReturn( '<html>Invalid</html>' );
-
-		$this->expectOutputString( '<html>Invalid</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 500 === $ctx['response_code'];
+			},
+			'<html>Invalid</html>'
+		);
 
 		$this->handler->handle_wp_die( 'Error', '', [ 'response' => 999, 'exit' => false ] );
 	}
@@ -677,19 +630,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return true === $ctx['back_link'];
-					}
-				)
-			)
-			->willReturn( '<html>Back</html>' );
-
-		$this->expectOutputString( '<html>Back</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return true === $ctx['back_link'];
+			},
+			'<html>Back</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'Error',
@@ -712,19 +659,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'ISO-8859-1' === $ctx['charset'];
-					}
-				)
-			)
-			->willReturn( '<html>Charset</html>' );
-
-		$this->expectOutputString( '<html>Charset</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'ISO-8859-1' === $ctx['charset'];
+			},
+			'<html>Charset</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'Error',
@@ -747,19 +688,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 403 === $ctx['response_code'];
-					}
-				)
-			)
-			->willReturn( '<html>403</html>' );
-
-		$this->expectOutputString( '<html>403</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 403 === $ctx['response_code'];
+			},
+			'<html>403</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'Forbidden',
@@ -782,19 +717,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'rtl' === $ctx['text_direction'];
-					}
-				)
-			)
-			->willReturn( '<html>RTL</html>' );
-
-		$this->expectOutputString( '<html>RTL</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'rtl' === $ctx['text_direction'];
+			},
+			'<html>RTL</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'Error',
@@ -817,20 +746,13 @@ class HandlerTest extends TestCase {
 		Functions\when( 'get_bloginfo' )->justReturn( 'UTF-8' );
 		Functions\when( 'headers_sent' )->justReturn( true );
 
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'ltr' === $ctx['text_direction'];
-					}
-				)
-			)
-			->willReturn( '<html>Dir</html>' );
-
-		$this->expectOutputString( '<html>Dir</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'ltr' === $ctx['text_direction'];
+			},
+			'<html>Dir</html>'
+		);
 
 		$this->handler->handle_wp_die(
 			'Error',
@@ -857,20 +779,13 @@ class HandlerTest extends TestCase {
 		$error->add( 'second', 'Second error.' );
 		$error->add( 'third', 'Third error.' );
 
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return "First error.\nSecond error.\nThird error." === $ctx['error_message'];
-					}
-				)
-			)
-			->willReturn( '<html>Multi</html>' );
-
-		$this->expectOutputString( '<html>Multi</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return "First error.\nSecond error.\nThird error." === $ctx['error_message'];
+			},
+			'<html>Multi</html>'
+		);
 
 		$this->handler->handle_wp_die( $error, '', [ 'exit' => false ] );
 	}
@@ -891,20 +806,13 @@ class HandlerTest extends TestCase {
 
 		$error = new \WP_Error( 'only', 'Only error.' );
 
-		$this->mock_engine
-			->expects( $this->once() )
-			->method( 'render' )
-			->with(
-				'minimal',
-				$this->callback(
-					function ( array $ctx ): bool {
-						return 'Only error.' === $ctx['error_message'];
-					}
-				)
-			)
-			->willReturn( '<html>Single</html>' );
-
-		$this->expectOutputString( '<html>Single</html>' );
+		$this->expect_display(
+			'minimal',
+			function ( array $ctx ): bool {
+				return 'Only error.' === $ctx['error_message'];
+			},
+			'<html>Single</html>'
+		);
 
 		$this->handler->handle_wp_die( $error, '', [ 'exit' => false ] );
 	}
@@ -924,7 +832,7 @@ class HandlerTest extends TestCase {
 		$value = $ref->getValue( $this->handler );
 
 		$this->assertIsString( $value );
-		$this->assertSame( 16384, strlen( $value ) );
+		$this->assertSame( 32768, strlen( $value ) );
 	}
 
 	/**
